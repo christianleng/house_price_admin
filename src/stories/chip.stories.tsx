@@ -18,21 +18,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    children: "Default Chip",
+    children: "Chip par défaut",
     variant: "default",
   },
 };
 
 export const Green: Story = {
   args: {
-    children: "Blk 90A TELOK BLANGAH",
+    children: "15 Rue de Vaugirard",
     variant: "green",
   },
 };
 
 export const Brown: Story = {
   args: {
-    children: "Blk 145 LOR 2 TOA PAYOH",
-    variant: "brown",
+    children: "42 Avenue Victor Hugo",
+    variant: "brandOrange",
   },
 };
