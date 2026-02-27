@@ -1,9 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import {
-  Example,
-  ExampleWrapper,
-} from "@/components/example"
+import { Example, ExampleWrapper } from "@/components/example";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,9 +12,9 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -26,7 +23,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Combobox,
   ComboboxContent,
@@ -34,7 +31,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
+} from "@/components/ui/combobox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -51,9 +48,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -61,9 +58,38 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { RiAddLine, RiBluetoothLine, RiMore2Line, RiFileLine, RiFolderLine, RiFolderOpenLine, RiCodeLine, RiMoreLine, RiSearchLine, RiSaveLine, RiDownloadLine, RiEyeLine, RiLayoutLine, RiPaletteLine, RiSunLine, RiMoonLine, RiComputerLine, RiUserLine, RiBankCardLine, RiSettingsLine, RiKeyboardLine, RiTranslate, RiNotificationLine, RiMailLine, RiShieldLine, RiQuestionLine, RiFileTextLine, RiLogoutBoxLine } from "@remixicon/react"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  RiAddLine,
+  RiBluetoothLine,
+  RiMore2Line,
+  RiFileLine,
+  RiFolderLine,
+  RiFolderOpenLine,
+  RiCodeLine,
+  RiMoreLine,
+  RiSearchLine,
+  RiSaveLine,
+  RiDownloadLine,
+  RiEyeLine,
+  RiLayoutLine,
+  RiPaletteLine,
+  RiSunLine,
+  RiMoonLine,
+  RiComputerLine,
+  RiUserLine,
+  RiBankCardLine,
+  RiSettingsLine,
+  RiKeyboardLine,
+  RiTranslate,
+  RiNotificationLine,
+  RiMailLine,
+  RiShieldLine,
+  RiQuestionLine,
+  RiFileTextLine,
+  RiLogoutBoxLine,
+} from "@remixicon/react";
 
 export function ComponentExample() {
   return (
@@ -71,7 +97,7 @@ export function ComponentExample() {
       <CardExample />
       <FormExample />
     </ExampleWrapper>
-  )
+  );
 }
 
 function CardExample() {
@@ -104,8 +130,7 @@ function CardExample() {
             <AlertDialogContent size="sm">
               <AlertDialogHeader>
                 <AlertDialogMedia>
-                  <RiBluetoothLine
-                  />
+                  <RiBluetoothLine />
                 </AlertDialogMedia>
                 <AlertDialogTitle>Allow accessory to connect?</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -125,7 +150,7 @@ function CardExample() {
         </CardFooter>
       </Card>
     </Example>
-  )
+  );
 }
 
 const frameworks = [
@@ -134,15 +159,15 @@ const frameworks = [
   "Nuxt.js",
   "Remix",
   "Astro",
-] as const
+] as const;
 
 function FormExample() {
   const [notifications, setNotifications] = React.useState({
     email: true,
     sms: false,
     push: true,
-  })
-  const [theme, setTheme] = React.useState("light")
+  });
+  const [theme, setTheme] = React.useState("light");
 
   return (
     <Example title="Form">
@@ -154,8 +179,7 @@ function FormExample() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <RiMore2Line
-                  />
+                  <RiMore2Line />
                   <span className="sr-only">More options</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -163,21 +187,18 @@ function FormExample() {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>File</DropdownMenuLabel>
                   <DropdownMenuItem>
-                    <RiFileLine
-                    />
+                    <RiFileLine />
                     New File
                     <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <RiFolderLine
-                    />
+                    <RiFolderLine />
                     New Folder
                     <DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                      <RiFolderOpenLine
-                      />
+                      <RiFolderOpenLine />
                       Open Recent
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
@@ -185,31 +206,26 @@ function FormExample() {
                         <DropdownMenuGroup>
                           <DropdownMenuLabel>Recent Projects</DropdownMenuLabel>
                           <DropdownMenuItem>
-                            <RiCodeLine
-                            />
+                            <RiCodeLine />
                             Project Alpha
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <RiCodeLine
-                            />
+                            <RiCodeLine />
                             Project Beta
                           </DropdownMenuItem>
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger>
-                              <RiMoreLine
-                              />
+                              <RiMoreLine />
                               More Projects
                             </DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                               <DropdownMenuSubContent>
                                 <DropdownMenuItem>
-                                  <RiCodeLine
-                                  />
+                                  <RiCodeLine />
                                   Project Gamma
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                  <RiCodeLine
-                                  />
+                                  <RiCodeLine />
                                   Project Delta
                                 </DropdownMenuItem>
                               </DropdownMenuSubContent>
@@ -219,8 +235,7 @@ function FormExample() {
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                           <DropdownMenuItem>
-                            <RiSearchLine
-                            />
+                            <RiSearchLine />
                             Browse...
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
@@ -229,14 +244,12 @@ function FormExample() {
                   </DropdownMenuSub>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <RiSaveLine
-                    />
+                    <RiSaveLine />
                     Save
                     <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <RiDownloadLine
-                    />
+                    <RiDownloadLine />
                     Export
                     <DropdownMenuShortcut>⇧⌘E</DropdownMenuShortcut>
                   </DropdownMenuItem>
@@ -253,8 +266,7 @@ function FormExample() {
                       })
                     }
                   >
-                    <RiEyeLine
-                    />
+                    <RiEyeLine />
                     Show Sidebar
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
@@ -266,14 +278,12 @@ function FormExample() {
                       })
                     }
                   >
-                    <RiLayoutLine
-                    />
+                    <RiLayoutLine />
                     Show Status Bar
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                      <RiPaletteLine
-                      />
+                      <RiPaletteLine />
                       Theme
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
@@ -285,18 +295,15 @@ function FormExample() {
                             onValueChange={setTheme}
                           >
                             <DropdownMenuRadioItem value="light">
-                              <RiSunLine
-                              />
+                              <RiSunLine />
                               Light
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="dark">
-                              <RiMoonLine
-                              />
+                              <RiMoonLine />
                               Dark
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="system">
-                              <RiComputerLine
-                              />
+                              <RiComputerLine />
                               System
                             </DropdownMenuRadioItem>
                           </DropdownMenuRadioGroup>
@@ -309,20 +316,17 @@ function FormExample() {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>Account</DropdownMenuLabel>
                   <DropdownMenuItem>
-                    <RiUserLine
-                    />
+                    <RiUserLine />
                     Profile
                     <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <RiBankCardLine
-                    />
+                    <RiBankCardLine />
                     Billing
                   </DropdownMenuItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                      <RiSettingsLine
-                      />
+                      <RiSettingsLine />
                       Settings
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
@@ -330,19 +334,16 @@ function FormExample() {
                         <DropdownMenuGroup>
                           <DropdownMenuLabel>Preferences</DropdownMenuLabel>
                           <DropdownMenuItem>
-                            <RiKeyboardLine
-                            />
+                            <RiKeyboardLine />
                             Keyboard Shortcuts
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <RiTranslate
-                            />
+                            <RiTranslate />
                             Language
                           </DropdownMenuItem>
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger>
-                              <RiNotificationLine
-                              />
+                              <RiNotificationLine />
                               Notifications
                             </DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
@@ -360,8 +361,7 @@ function FormExample() {
                                       })
                                     }
                                   >
-                                    <RiNotificationLine
-                                    />
+                                    <RiNotificationLine />
                                     Push Notifications
                                   </DropdownMenuCheckboxItem>
                                   <DropdownMenuCheckboxItem
@@ -373,8 +373,7 @@ function FormExample() {
                                       })
                                     }
                                   >
-                                    <RiMailLine
-                                    />
+                                    <RiMailLine />
                                     Email Notifications
                                   </DropdownMenuCheckboxItem>
                                 </DropdownMenuGroup>
@@ -385,8 +384,7 @@ function FormExample() {
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                           <DropdownMenuItem>
-                            <RiShieldLine
-                            />
+                            <RiShieldLine />
                             Privacy & Security
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
@@ -397,21 +395,18 @@ function FormExample() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <RiQuestionLine
-                    />
+                    <RiQuestionLine />
                     Help & Support
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <RiFileTextLine
-                    />
+                    <RiFileTextLine />
                     Documentation
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem variant="destructive">
-                    <RiLogoutBoxLine
-                    />
+                    <RiLogoutBoxLine />
                     Sign Out
                     <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                   </DropdownMenuItem>
@@ -489,5 +484,5 @@ function FormExample() {
         </CardContent>
       </Card>
     </Example>
-  )
+  );
 }
