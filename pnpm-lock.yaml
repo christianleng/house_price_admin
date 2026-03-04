@@ -26,6 +26,9 @@ importers:
       '@remixicon/react':
         specifier: ^4.9.0
         version: 4.9.0(react@19.2.4)
+      '@tabler/icons-react':
+        specifier: ^3.38.0
+        version: 3.38.0(react@19.2.4)
       '@tailwindcss/vite':
         specifier: ^4.1.17
         version: 4.1.18(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))
@@ -1673,6 +1676,14 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  '@tabler/icons-react@3.38.0':
+    resolution: {integrity: sha512-kR5wv+m4+GgmnSszg3rQd6SrTFAQ/XnQC/yTwIfuRJSfqB12KoIC7fPbIijFgOHTFlBN5DARnN0IVrR7KYG6/A==}
+    peerDependencies:
+      react: '>= 16'
+
+  '@tabler/icons@3.38.0':
+    resolution: {integrity: sha512-FdETQSpQ3lN7BEjEUzjKhsfTDCamrvMDops4HEMphTm3DmkIFpThoODn8XXZ8Q9MhjshIvphIYVHHB7zpq167w==}
 
   '@tailwindcss/node@4.1.18':
     resolution: {integrity: sha512-DoR7U1P7iYhw16qJ49fgXUlry1t4CpXeErJHnQ44JgTSKMaZUdf17cfn5mHchfJ4KRBZRFA/Coo+MUF5+gOaCQ==}
@@ -5801,6 +5812,13 @@ snapshots:
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
+
+  '@tabler/icons-react@3.38.0(react@19.2.4)':
+    dependencies:
+      '@tabler/icons': 3.38.0
+      react: 19.2.4
+
+  '@tabler/icons@3.38.0': {}
 
   '@tailwindcss/node@4.1.18':
     dependencies:

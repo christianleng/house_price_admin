@@ -13,7 +13,7 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field";
-import { useNavigate, useNavigation } from "react-router";
+import { useLocation, useNavigate, useNavigation } from "react-router";
 import { useAuth } from "../providers/authProviders";
 import { useState } from "react";
 import { z } from "zod";
@@ -35,10 +35,11 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
   const navigation = useNavigation();
+  const location = useLocation();
 
   const { login } = useAuth();
   const [globalError, setGlobalError] = useState<string | null>(null);
-
+  const from = location.state?.from?.pathname || "/";
   const {
     register,
     handleSubmit,
@@ -54,7 +55,7 @@ export function LoginForm({
     setGlobalError(null);
     try {
       await login(data);
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (error) {
       setGlobalError(`Échec de connexion. Vérifiez vos identifiants. ${error}`);
     }
