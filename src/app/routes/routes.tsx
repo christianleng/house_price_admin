@@ -1,10 +1,15 @@
 import RootErrorBoundary from "@/pages/errors/RootErrorBoundary";
 import RootLayout from "../layouts/RootLayout";
+import { RequireAuth } from "@/core/presentation/auth/components/RequireAuth";
 
 export const routes = [
   {
     path: "/",
-    Component: RootLayout,
+    Component: () => (
+      <RequireAuth>
+        <RootLayout />
+      </RequireAuth>
+    ),
     HydrateFallback: () => <div className="min-h-screen bg-white" />,
     ErrorBoundary: RootErrorBoundary,
     children: [

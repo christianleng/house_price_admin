@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "../api/auth.service";
 import { tokenStorage } from "../api/token.storage";
@@ -20,11 +20,14 @@ const AUTH_KEYS = { user: ["auth", "user"] as const };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
-  const token = tokenStorage.getToken();
+  const [token, setToken] = useState<string | undefined>(
+    tokenStorage.getToken(),
+  );
 
   const {
     data: user,
     isFetched,
+    isFetching,
     error: userError,
   } = useQuery({
     queryKey: AUTH_KEYS.user,
@@ -41,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginMutation = useMutation({
     mutationFn: authService.login,
     onSuccess: async () => {
+      setToken(tokenStorage.getToken());
       await queryClient.invalidateQueries({ queryKey: AUTH_KEYS.user });
     },
   });
@@ -49,9 +53,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     mutationFn: authService.logout,
     onSettled: () => {
       tokenStorage.clearToken();
+      setToken(undefined);
       queryClient.setQueryData(AUTH_KEYS.user, null);
       queryClient.removeQueries({ queryKey: AUTH_KEYS.user });
-      window.location.href = "/";
+      window.location.href = "/auth/login";
     },
   });
 
@@ -63,7 +68,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logoutMutation.mutate();
   };
 
-  const isLoading = (!!token && !isFetched) || loginMutation.isPending;
+  const isLoading =
+    (!!token && !isFetched && isFetching) || loginMutation.isPending;
 
   return (
     <AuthContext.Provider
