@@ -20,6 +20,49 @@ export const routes = [
               return { Component: m.default };
             },
           },
+
+          {
+            path: "properties",
+            lazy: async () => {
+              const m =
+                await import("@/features/properties/components/PropertyListPage");
+              return { Component: m.default };
+            },
+          },
+          {
+            path: "properties/new",
+            lazy: async () => {
+              const m =
+                await import("@/features/properties/components/PropertyCreatePage");
+              return { Component: m.default };
+            },
+          },
+          {
+            path: "properties/:id",
+            lazy: async () => {
+              const m =
+                await import("@/features/properties/components/PropertyDetailPage");
+              return { Component: m.default };
+            },
+          },
+          {
+            path: "properties/:id/edit",
+            lazy: async () => {
+              const m =
+                await import("@/features/properties/components/PropertyEditPage");
+              return { Component: m.default };
+            },
+          },
+
+          {
+            path: "profile",
+            lazy: async () => {
+              const m =
+                await import("@/features/profile/components/ProfilePage");
+              return { Component: m.default };
+            },
+          },
+
           {
             path: "*",
             lazy: async () => {
