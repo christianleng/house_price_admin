@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/app/layouts/components/AppSidebar";
 import { SiteHeader } from "@/app/layouts/components/SiteHeader";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
+import { TooltipProvider } from "@/shared/ui/tooltip";
 import { Outlet } from "react-router";
 
 const RootLayout = () => {

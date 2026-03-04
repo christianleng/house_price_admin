@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { QueryProvider } from "./QueryProvider";
-import { AuthProvider } from "@/core/presentation/auth/providers/authProviders";
+import { AuthProvider } from "@/02-infrastructure/auth/AuthProvider";
 
 interface AppProvidersProps {
   children: ReactNode;

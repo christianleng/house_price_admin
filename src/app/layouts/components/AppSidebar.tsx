@@ -27,7 +27,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/shared/ui/sidebar";
 import { NavMain } from "./nav/NavMain";
 import { NavDocuments } from "./nav/NavDocuments";
 import { NavSecondary } from "./nav/NavSecondary";
