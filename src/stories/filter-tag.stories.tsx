@@ -1,4 +1,4 @@
-import { FilterTag } from "@/components/molecules/filter-tag";
+import { FilterTag } from "@/shared/ui/filter-tag";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
