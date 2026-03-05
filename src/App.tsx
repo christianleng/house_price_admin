@@ -1,7 +1,8 @@
-import { ComponentExample } from "@/components/component-example";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import { routes } from "./02-infrastructure/router/routes";
+
+const router = createBrowserRouter(routes);
 
 export function App() {
-return <ComponentExample />;
+  return <RouterProvider router={router} />;
 }
-
-export default App;
