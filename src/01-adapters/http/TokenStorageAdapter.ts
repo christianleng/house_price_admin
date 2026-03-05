@@ -10,12 +10,12 @@ export const tokenStorage: ITokenStorage = {
   setToken: (token: string) => {
     Cookies.set(TOKEN_KEY, token, {
       expires: 7,
-      secure: true,
+      secure: import.meta.env.PROD,
       sameSite: "Strict",
     });
   },
   clearToken: () => {
-    Cookies.remove(TOKEN_KEY);
+    return Cookies.remove(TOKEN_KEY);
   },
 
   isAuthenticated: (): boolean => {

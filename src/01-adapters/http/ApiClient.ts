@@ -8,10 +8,16 @@ interface RequestConfig<P extends object = object> extends RequestInit {
 class APIClient {
   private readonly baseURL: string;
   private readonly getToken: () => string | undefined;
+  private readonly clearToken: () => void;
 
-  constructor(baseURL: string, getToken: () => string | undefined) {
+  constructor(
+    baseURL: string,
+    getToken: () => string | undefined,
+    clearToken: () => void,
+  ) {
     this.baseURL = baseURL;
     this.getToken = getToken;
+    this.clearToken = clearToken;
   }
 
   private buildURL<P extends object>(endpoint: string, params?: P): string {
@@ -38,7 +44,6 @@ class APIClient {
   ): Promise<T> {
     const url = this.buildURL(endpoint, params);
     const token = this.getToken();
-    // const token = tokenStorage.getToken();
     const headers = new Headers(options.headers);
 
     if (!headers.has("Content-Type"))
@@ -54,9 +59,9 @@ class APIClient {
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      // if (response.status === 401) {
-      //   tokenStorage.clearToken();
-      // }
+      if (response.status === 401) {
+        this.clearToken();
+      }
 
       throw await ApiError.fromResponse(response);
     }
@@ -143,6 +148,8 @@ class APIClient {
 
 import { tokenStorage } from "./TokenStorageAdapter";
 
-export const apiClient = new APIClient(env.API_URL, () =>
-  tokenStorage.getToken(),
+export const apiClient = new APIClient(
+  env.API_URL,
+  () => tokenStorage.getToken(),
+  () => tokenStorage.clearToken(),
 );

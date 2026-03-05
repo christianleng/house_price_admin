@@ -1,57 +1,56 @@
-import { IconBuilding, IconChartBar, IconMap } from "@tabler/icons-react";
+import { useRecentProperties } from "@/02-infrastructure/react-query/propertyHooks";
 import {
-  usePropertyCount,
-  usePropertiesByCities,
-} from "@/02-infrastructure/react-query/propertyHooks";
+  useGlobalStats,
+  useMonthlyStats,
+} from "@/02-infrastructure/react-query/adminHooks";
+import { EvolutionSection } from "./sections/EvolutionSection";
+import { DistributionSection } from "./sections/DistributionSection";
+import { RecentSection } from "./sections/RecentSection";
+import { PortfolioSection } from "./sections/PortfolioSection";
+import { QualitySection } from "./sections/QualitySection";
 
 export default function DashboardPage() {
-  const totalCount = usePropertyCount();
-  const activeCount = usePropertyCount({ status: "active" });
-  const byCities = usePropertiesByCities();
-
-  const citiesCount = byCities.data ? Object.keys(byCities.data).length : 0;
-
-  const kpiCards = [
-    {
-      title: "Propriétés totales",
-      value: totalCount.data,
-      loading: totalCount.isLoading,
-      icon: IconBuilding,
-    },
-    {
-      title: "Propriétés actives",
-      value: activeCount.data,
-      loading: activeCount.isLoading,
-      icon: IconChartBar,
-    },
-    {
-      title: "Villes couvertes",
-      value: citiesCount,
-      loading: byCities.isLoading,
-      icon: IconMap,
-    },
-  ];
+  const { data: stats, isLoading: loadingStats } = useGlobalStats();
+  const { data: monthly, isLoading: loadingMonthly } = useMonthlyStats(6);
+  const { data: recentData, isLoading: loadingRecent } = useRecentProperties(5);
 
   return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Dashboard</h1>
+    <div className="px-6 py-6 space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Dashboard
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Vue d'ensemble du portefeuille immobilier
+        </p>
+      </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {kpiCards.map((kpi) => (
-          <div key={kpi.title} className="rounded-xl border bg-card p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{kpi.title}</span>
-              <kpi.icon className="size-4 text-muted-foreground" />
-            </div>
-            <p className="mt-2 text-3xl font-bold">
-              {kpi.loading ? (
-                <span className="inline-block h-8 w-16 animate-pulse rounded bg-muted" />
-              ) : (
-                (kpi.value ?? "—")
-              )}
-            </p>
-          </div>
-        ))}
+      <div className="dashboard-layout">
+        <div className="area-kpi-portfolio">
+          <PortfolioSection
+            stats={stats}
+            monthly={monthly}
+            loadingStats={loadingStats}
+          />
+        </div>
+        <div className="area-kpi-quality">
+          <QualitySection stats={stats} loadingStats={loadingStats} />
+        </div>
+
+        <div className="area-evolution">
+          <EvolutionSection monthly={monthly} loadingMonthly={loadingMonthly} />
+        </div>
+
+        <div className="area-distrib">
+          <DistributionSection stats={stats} loadingStats={loadingStats} />
+        </div>
+
+        <div className="area-recent">
+          <RecentSection
+            items={recentData?.items}
+            loadingRecent={loadingRecent}
+          />
+        </div>
       </div>
     </div>
   );
