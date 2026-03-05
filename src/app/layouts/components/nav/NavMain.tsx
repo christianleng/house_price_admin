@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/ui/sidebar";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 export function NavMain({
   items,
@@ -20,6 +20,13 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
+  const { pathname } = useLocation();
+
+  const isActive = (url: string) => {
+    if (url === "/") return pathname === "/";
+    return pathname.startsWith(url);
+  };
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -41,6 +48,7 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip={item.title}
                   className="hover:cursor-pointer"
+                  isActive={isActive(item.url)}
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>

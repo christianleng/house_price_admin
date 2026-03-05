@@ -5,6 +5,11 @@ export const API_ENDPOINTS = {
     ME: "/api/auth/me",
   },
 
+  ADMIN: {
+    STATS: "/api/admin/stats",
+    STATS_MONTHLY: "/api/admin/stats/monthly",
+  },
+
   PROPERTIES: {
     LIST: "/api/properties",
     DETAIL: (id: string) => `/api/properties/${id}`,

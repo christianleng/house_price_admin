@@ -12,6 +12,7 @@ const RootLayout = () => {
           {
             "--sidebar-width": "calc(var(--spacing) * 72)",
             "--header-height": "calc(var(--spacing) * 12)",
+            backgroundColor: "var(--muted)",
           } as React.CSSProperties
         }
       >

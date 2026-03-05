@@ -1,5 +1,5 @@
 import type { AuthTokenDto } from "@/01-adapters/http/HttpAuthAdapter";
-import type { LoginCredentials, User } from "../entities";
+import type { LoginCredentials, RecentProperty, User } from "../entities";
 
 export interface IAuthService {
   isAuthenticated(): boolean;
@@ -13,4 +13,10 @@ export interface ITokenStorage {
   setToken(token: string): void;
   clearToken(): void;
   isAuthenticated(): boolean;
+}
+
+export interface IPropertyService {
+  getCount(params?: { status?: string }): Promise<number>;
+  getByCities(): void;
+  getRecent(limit: number): Promise<{ items: RecentProperty[]; total: number }>;
 }
