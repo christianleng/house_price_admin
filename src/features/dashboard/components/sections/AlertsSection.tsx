@@ -77,12 +77,14 @@ export function AlertsSection() {
         return (
           <div
             key={id}
+            data-testid="alert-item"
             className={`flex items-center gap-3 border border-l-[3px] rounded-r-sm px-4 py-2.5 ${container}`}
           >
             <span className="text-base shrink-0">{icon}</span>
             <span className="flex-1 text-xs text-foreground">{message}</span>
             {cta && (
               <Link
+                data-testid="alert-cta"
                 to={cta.href}
                 className={`text-xs font-semibold shrink-0 underline underline-offset-2 ${ctaClass}`}
               >
