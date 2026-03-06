@@ -1,6 +1,13 @@
 import RootErrorBoundary from "@/shared/pages/RootErrorBoundary";
 import RootLayout from "../../app/layouts/RootLayout";
 import { ProtectedLayout } from "@/features/auth/components/ProtectedLayout";
+import { queryClient } from "../react-query/queryClient";
+import {
+  citiesPerformanceQuery,
+  globalStatsQuery,
+  monthlyStatsQuery,
+} from "../react-query/adminHooks";
+import { recentPropertiesQuery } from "../react-query/propertyHooks";
 
 export const routes = [
   {
@@ -14,13 +21,19 @@ export const routes = [
         children: [
           {
             index: true,
+            loader: () => {
+              queryClient.prefetchQuery(globalStatsQuery);
+              queryClient.prefetchQuery(monthlyStatsQuery(6));
+              queryClient.prefetchQuery(recentPropertiesQuery(5));
+              queryClient.prefetchQuery(citiesPerformanceQuery);
+              return null;
+            },
             lazy: async () => {
               const m =
                 await import("@/features/dashboard/components/DashboardPage");
               return { Component: m.default };
             },
           },
-
           {
             path: "properties",
             lazy: async () => {

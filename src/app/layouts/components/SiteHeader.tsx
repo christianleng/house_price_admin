@@ -1,5 +1,7 @@
 import { Separator } from "@/shared/ui/separator";
 import { SidebarTrigger } from "@/shared/ui/sidebar";
+import { Link } from "react-router";
+import { IconPlus, IconCalendar } from "@tabler/icons-react";
 
 export function SiteHeader() {
   return (
@@ -10,7 +12,20 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">Documents</h1>
+
+        <div className="ml-auto flex items-center gap-2">
+          <button className="flex items-center shadow-sidebar-active gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
+            <IconCalendar className="size-3.5" />6 derniers mois
+          </button>
+
+          <Link
+            to="/properties/create"
+            className="flex items-center gap-1.5 bg-primary text-primary-foreground rounded-sm px-3 py-1.5 text-xs font-semibold transition-colors"
+          >
+            <IconPlus className="size-3.5" />
+            Ajouter un bien
+          </Link>
+        </div>
       </div>
     </header>
   );

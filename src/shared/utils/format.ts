@@ -9,3 +9,7 @@ export function formatPercent(value: number | null | undefined): string {
   if (value == null) return "—";
   return `${value > 0 ? "+" : ""}${value}%`;
 }
+
+export function pluralize(count: number, word: string) {
+  return `${count} ${word}${count > 1 ? "s" : ""}`;
+}
