@@ -17,6 +17,5 @@ export interface ITokenStorage {
 
 export interface IPropertyService {
   getCount(params?: { status?: string }): Promise<number>;
-  getByCities(): void;
   getRecent(limit: number): Promise<{ items: RecentProperty[]; total: number }>;
 }

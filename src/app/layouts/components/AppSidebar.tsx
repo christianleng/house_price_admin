@@ -4,9 +4,12 @@ import * as React from "react";
 import {
   IconDashboard,
   IconInnerShadowTop,
-  IconSettings,
-  IconBuilding,
   IconHelp,
+  IconBuildingEstate,
+  IconHomeDollar,
+  IconHomeHeart,
+  IconMapPin,
+  IconUserCircle,
 } from "@tabler/icons-react";
 
 import {
@@ -19,7 +22,6 @@ import {
   SidebarMenuItem,
 } from "@/shared/ui/sidebar";
 import { NavMain } from "./nav/NavMain";
-import { NavDocuments } from "./nav/NavDocuments";
 import { NavSecondary } from "./nav/NavSecondary";
 import { NavUser } from "./nav/NavUser";
 import { Link } from "react-router";
@@ -40,7 +42,22 @@ const data = {
     {
       title: "Propriétés",
       url: "/properties",
-      icon: IconBuilding,
+      icon: IconBuildingEstate,
+    },
+    {
+      title: "Ventes",
+      url: "/sell",
+      icon: IconHomeDollar,
+    },
+    {
+      title: "Locations",
+      url: "/locations",
+      icon: IconHomeHeart,
+    },
+    {
+      title: "Villes",
+      url: "/city",
+      icon: IconMapPin,
     },
   ],
 
@@ -48,7 +65,7 @@ const data = {
     {
       title: "Mon profil",
       url: "/profile",
-      icon: IconSettings,
+      icon: IconUserCircle,
     },
     {
       title: "Aide",
@@ -56,8 +73,6 @@ const data = {
       icon: IconHelp,
     },
   ],
-
-  documents: [],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -80,7 +95,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent className="bg-muted">
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-muted">
