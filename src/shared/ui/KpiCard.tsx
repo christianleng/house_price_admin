@@ -37,7 +37,11 @@ export function KpiCard({
   colorClass = "text-foreground",
 }: KpiCardProps) {
   const card = (
-    <div className="kpi-card-grid rounded-sm shadow-sidebar-active bg-card px-5 pt-5 pb-4">
+    <div
+      data-testid="kpi-card"
+      data-kpi-title={title}
+      className="kpi-card-grid rounded-sm shadow-sidebar-active bg-card px-5 pt-5 pb-4"
+    >
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-bold uppercase">{title}</p>
         <div className="rounded-sm p-2 shrink-0 bg-muted">
