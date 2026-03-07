@@ -22,12 +22,10 @@ export function CityPerformanceSection() {
 
   return (
     <section className="rounded-sm shadow-sidebar-active bg-card p-5">
-      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-        Performance par ville
-      </p>
-      <h2 className="text-base font-bold text-foreground mb-4">
-        Indicateurs clés
-      </h2>
+      <div className="mb-4">
+        <h3 className="text-sm font-semibold">Performance par ville</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">Indicateurs clés</p>
+      </div>
 
       <table className="w-full text-sm border-collapse">
         <thead>

@@ -1,177 +1,203 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/outfit";
+
+@import "@fontsource/varela-round";
+@import "@fontsource/inter";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   /* ── Fond ──────────────────────────────────────── */
-  --background: #f4f7fb;
+  --background: #f0f4f9;
   --card: #ffffff;
-  --card-foreground: #1e3a5f;
+  --card-foreground: #0f2340;
   --popover: #ffffff;
-  --popover-foreground: #1e3a5f;
+  --popover-foreground: #0f2340;
 
   /* ── Textes ────────────────────────────────────── */
-  --foreground: #1e3a5f;
-  --muted-foreground: #64748b;
+  --foreground: #0f2340;
+  --muted-foreground: #344355;
 
   /* ── Éléments UI ───────────────────────────────── */
-  --muted: #f0f0f0;
-  --secondary: #f8fafc;
-  --secondary-foreground: #334155;
-  --accent: #f1f5f9;
-  --accent-foreground: #1e3a5f;
+  --muted: #eaeff5;
+  --secondary: #f5f8fc;
+  --secondary-foreground: #2d4a6e;
+  --accent: #e8f0f8;
+  --accent-foreground: #0f2340;
 
   /* ── Brand ─────────────────────────────────────── */
-  --primary: #1e3a5f;
+  --primary: #1a3558;
   --primary-foreground: #ffffff;
 
   /* ── Status ────────────────────────────────────── */
-  --destructive: #ef4444;
+  --destructive: #c8372d;
 
   /* ── Borders ───────────────────────────────────── */
-  --border: #e8ecf0;
-  --input: #f8fafc;
-  --ring: #cbd5e1;
+  --border: #dce4ee;
+  --input: #f5f8fc;
+  --ring: #a8bedc;
 
   --radius: 0.625rem;
 
   /* ── Alertes ───────────────────────────────────── */
-  --alert-urgent-bg: #fff8f0;
-  --alert-urgent-border: #fbd38d;
-  --alert-warn-bg: #fffbeb;
-  --alert-warn-border: #fde68a;
-  --alert-success-bg: #f0fdf4;
-  --alert-success-border: #bbf7d0;
+  --alert-urgent-bg: #fef6ee;
+  --alert-urgent-border: #f0a060;
+  --alert-warn-bg: #fefbf0;
+  --alert-warn-border: #e8c84a;
+  --alert-success-bg: #f0faf5;
+  --alert-success-border: #5cc490;
 
-  /* ── Statuts ───────────────────────────────────── */
-  --status-success: #10b981;
-  --status-success-dark: #15803d;
-  --status-warning: #f59e0b;
-  --status-warning-dark: #d97706;
-  --status-urgent: #f97316;
-  --status-error: #ef4444;
-  --status-error-dark: #dc2626;
-  --status-location: #7c3aed;
+  --status-success: #104c2e;
+
+  --status-success-light: #d1fae5;
+  --status-success-dark: #145f39;
+
+  --status-warning: #613900;
+
+  --status-warning-light: #fef3c7;
+  --status-warning-dark: #7c4700;
+
+  --status-urgent: #b84c00;
+  --status-urgent-light: #ffedd5;
+
+  --status-error: #c8372d;
+  --status-error-dark: #9e1f17;
+
+  --status-location: #1464a8;
+  --status-location: #0d4372;
+
+  --status-location-light: #dbeafe;
 
   /* ── Charts ────────────────────────────────────── */
-  --series-blue: #2563b0;
-  --series-blue-light: #cbd5e1;
-  --series-green: #10b981;
-  --series-orange: #f59e0b;
+  /* --series-blue: #1a5fa8; */
+  --series-blue: #134377;
+
+  --series-blue-light: #bfdbfe;
+  --series-green: #1a7a4a;
+  --series-orange: #a05c00;
+  --series-teal: #0e7490;
 
   /* ── Funnel ────────────────────────────────────── */
-  --funnel-1: #1e3a5f;
-  --funnel-2: #2563b0;
+  --funnel-1: #1a3558;
+  --funnel-2: #1a5fa8;
   --funnel-3: #3b82f6;
-  --funnel-4: #f59e0b;
-  --funnel-5: #10b981;
+  --funnel-4: #a05c00;
+  --funnel-5: #1a7a4a;
 
   /* ── Sidebar ───────────────────────────────────── */
   --sidebar-background: #ffffff;
-  --sidebar-foreground: #1e3a5f;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #1e3a5f;
-  --sidebar-border: #e8ecf0;
-  --sidebar-ring: #cbd5e1;
-  --sidebar-primary: #1e3a5f;
+  --sidebar-foreground: #0f2340;
+  --sidebar-accent: #e8f0f8;
+  --sidebar-accent-foreground: #0f2340;
+  --sidebar-border: #dce4ee;
+  --sidebar-ring: #a8bedc;
+  --sidebar-primary: #1a3558;
   --sidebar-primary-foreground: #ffffff;
 
   /* ── Legacy ────────────────────────────────────── */
-  --brand-orange: #f97316;
-  --tag-bg: #f1f5f9;
-  --tag-border: #e8ecf0;
+  --brand-orange: #b84c00;
+  --tag-bg: #e8f0f8;
+  --tag-border: #dce4ee;
 
   --sidebar-active-shadow:
-    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    rgba(26, 53, 88, 0.18) 0px 1px 2px 0px,
+    rgba(26, 53, 88, 0.1) 0px 2px 6px 1px;
 }
 
 .dark {
   /* ── Fond ──────────────────────────────────────── */
-  --background: #080d14;
-  --card: #0d1520;
-  --card-foreground: #e8f0f8;
-  --popover: #0d1520;
-  --popover-foreground: #e8f0f8;
+  --background: #070c14;
+  --card: #0c1623;
+  --card-foreground: #dce8f5;
+  --popover: #0c1623;
+  --popover-foreground: #dce8f5;
 
   /* ── Textes ────────────────────────────────────── */
-  --foreground: #e8f0f8;
-  --muted-foreground: #6d8fad;
+  --foreground: #dce8f5;
+  --muted-foreground: #7a9bbf;
 
   /* ── Éléments UI ───────────────────────────────── */
-  --muted: #1e1e1e;
-  --secondary: #111c2b;
-  --secondary-foreground: #b8cfe8;
-  --accent: #162033;
-  --accent-foreground: #e8f0f8;
+  --muted: #141e2e;
+  --secondary: #0f1d30;
+  --secondary-foreground: #a8c4e0;
+  --accent: #152338;
+  --accent-foreground: #dce8f5;
 
   /* ── Brand ─────────────────────────────────────── */
-  --primary: #4a8fd4;
-  --primary-foreground: #080d14;
+  --primary: #4c96e0;
+  --primary-foreground: #070c14;
 
   /* ── Status ────────────────────────────────────── */
   --destructive: #f87171;
 
   /* ── Borders ───────────────────────────────────── */
-  --border: rgba(255, 255, 255, 0.06);
-  --input: #111c2b;
-  --ring: rgba(74, 143, 212, 0.12);
+  --border: rgba(255, 255, 255, 0.07);
+  --input: #0f1d30;
+  --ring: rgba(76, 150, 224, 0.15);
 
-  /* ── Alertes ───────────────────────────────────── */
-  --alert-urgent-bg: #1c1008;
-  --alert-urgent-border: #7c3400;
-  --alert-warn-bg: #1a1500;
-  --alert-warn-border: #78600a;
-  --alert-success-bg: #071a0f;
-  --alert-success-border: #065f2e;
+  /* ── Alertes dark ──────────────────────────────── */
+  --alert-urgent-bg: #1e1006;
+  --alert-urgent-border: #8a4000;
+  --alert-warn-bg: #1a1600;
+  --alert-warn-border: #806800;
+  --alert-success-bg: #061812;
+  --alert-success-border: #126038;
 
-  /* ── Statuts ───────────────────────────────────── */
-  --status-success: #34d399;
+  /* ── Statuts dark ──────────────────────────────── */
+  --status-success: #3dd68c;
+  --status-success-light: #052e16;
   --status-success-dark: #6ee7b7;
-  --status-warning: #fbbf24;
-  --status-warning-dark: #f59e0b;
+
+  --status-warning: #f0b429;
+  --status-warning-light: #1c1400;
+  --status-warning-dark: #fde68a;
+
   --status-urgent: #fb923c;
+  --status-urgent-light: #1c0d00;
+
   --status-error: #f87171;
-  --status-error-dark: #ef4444;
-  --status-location: #a78bfa;
+  --status-error-dark: #fca5a5;
 
-  /* ── Charts ────────────────────────────────────── */
-  --series-blue: #4a8fd4;
-  --series-blue-light: #93c5fd;
-  --series-green: #34d399;
-  --series-orange: #fbbf24;
+  --status-location: #60a8f0;
+  --status-location-light: #0f2340;
 
-  /* ── Funnel ────────────────────────────────────── */
+  /* ── Charts dark ───────────────────────────────── */
+  --series-blue: #4c96e0;
+  --series-blue-light: #1e3a5f;
+  --series-green: #3dd68c;
+  --series-orange: #f0b429;
+  --series-teal: #22d3ee;
+
+  /* ── Funnel dark ───────────────────────────────── */
   --funnel-1: #1e3a5f;
   --funnel-2: #2563b0;
   --funnel-3: #3b82f6;
-  --funnel-4: #f59e0b;
-  --funnel-5: #10b981;
+  --funnel-4: #f0b429;
+  --funnel-5: #3dd68c;
 
-  /* ── Sidebar ───────────────────────────────────── */
-  --sidebar-background: #0d1520;
-  --sidebar-foreground: #e8f0f8;
-  --sidebar-accent: #162033;
-  --sidebar-accent-foreground: #e8f0f8;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: rgba(74, 143, 212, 0.12);
-  --sidebar-primary: #4a8fd4;
-  --sidebar-primary-foreground: #080d14;
+  /* ── Sidebar dark ──────────────────────────────── */
+  --sidebar-background: #0c1623;
+  --sidebar-foreground: #dce8f5;
+  --sidebar-accent: #152338;
+  --sidebar-accent-foreground: #dce8f5;
+  --sidebar-border: rgba(255, 255, 255, 0.07);
+  --sidebar-ring: rgba(76, 150, 224, 0.15);
+  --sidebar-primary: #4c96e0;
+  --sidebar-primary-foreground: #070c14;
 
-  /* ── Legacy ────────────────────────────────────── */
+  /* ── Legacy dark ───────────────────────────────── */
   --brand-orange: #fb923c;
-  --tag-bg: #111c2b;
-  --tag-border: rgba(255, 255, 255, 0.06);
+  --tag-bg: #0f1d30;
+  --tag-border: rgba(255, 255, 255, 0.07);
 
   --sidebar-active-shadow:
-    rgba(0, 0, 0, 0.5) 0px 1px 2px 0px, rgba(0, 0, 0, 0.35) 0px 1px 3px 1px;
+    rgba(0, 0, 0, 0.55) 0px 1px 2px 0px, rgba(0, 0, 0, 0.38) 0px 2px 6px 1px;
 }
 
 @theme inline {
-  --font-sans: "Outfit", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-heading: "Varela Round", sans-serif;
 
   /* ── Core ───────────────────────────────────────── */
   --color-background: var(--background);
@@ -205,13 +231,17 @@
 
   /* ── Statuts ────────────────────────────────────── */
   --color-status-success: var(--status-success);
+  --color-status-success-light: var(--status-success-light);
   --color-status-success-dark: var(--status-success-dark);
   --color-status-warning: var(--status-warning);
+  --color-status-warning-light: var(--status-warning-light);
   --color-status-warning-dark: var(--status-warning-dark);
   --color-status-urgent: var(--status-urgent);
+  --color-status-urgent-light: var(--status-urgent-light);
   --color-status-error: var(--status-error);
   --color-status-error-dark: var(--status-error-dark);
   --color-status-location: var(--status-location);
+  --color-status-location-light: var(--status-location-light);
 
   /* ── Alertes ────────────────────────────────────── */
   --color-alert-urgent-bg: var(--alert-urgent-bg);
@@ -226,6 +256,7 @@
   --color-series-blue-light: var(--series-blue-light);
   --color-series-green: var(--series-green);
   --color-series-orange: var(--series-orange);
+  --color-series-teal: var(--series-teal);
 
   /* ── Funnel ─────────────────────────────────────── */
   --color-funnel-1: var(--funnel-1);
@@ -256,13 +287,28 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply font-sans bg-background text-foreground;
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
   }
   html {
-    @apply font-sans;
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  .text-3xl,
+  .text-4xl,
+  .text-5xl {
+    font-family: var(--font-heading);
   }
 }
-
 .dashboard-layout {
   display: grid;
   gap: 1.5rem;
@@ -286,7 +332,6 @@
   }
 }
 
-/* Check MOBILE_BREAKPOINT in use-mobile.ts if you update the min-width (1080px). */
 @media (min-width: 1080px) {
   .dashboard-layout {
     grid-template-columns: 1fr 1fr;
@@ -294,7 +339,7 @@
       "kpi           kpi"
       "recent        recent"
       "stagnant      quality-score"
-      "cities      cities";
+      "cities        cities";
   }
 }
 

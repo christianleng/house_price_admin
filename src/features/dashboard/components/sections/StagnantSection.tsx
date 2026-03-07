@@ -3,6 +3,7 @@ import { DPE_COLORS } from "@/shared/constants/dpe";
 import { formatPrice } from "@/shared/utils/format";
 import { useGlobalStats } from "@/02-infrastructure/react-query/adminHooks";
 import { TRANSACTION_TYPES } from "@/shared/constants/property";
+import { IconExternalLink } from "@tabler/icons-react";
 
 const STAGNANT_STYLES = {
   urgent: "bg-alert-urgent-bg border-alert-urgent-border text-status-error",
@@ -43,9 +44,9 @@ export function StagnantSection() {
         {header}
         <Link
           to="/properties?stagnant=true"
-          className="text-xs text-primary hover:underline shrink-0"
+          className="text-xs text-primary hover:underline flex items-center gap-1"
         >
-          Voir tout
+          Voir tout <IconExternalLink className="size-3" />
         </Link>
       </div>
 
