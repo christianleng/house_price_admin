@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
-    "@fontsource-variable/outfit": "^5.2.8",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/varela-round": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@hugeicons/core-free-icons": "^3.3.0",
     "@hugeicons/react": "^1.1.5",
