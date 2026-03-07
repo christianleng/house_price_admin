@@ -1,0 +1,86 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v4
+        with:
+          path: frontend
+
+      - name: Checkout backend
+        uses: actions/checkout@v4
+        with:
+          repository: christianleng/house_price
+          path: backend
+
+      - name: Create backend .env
+        working-directory: backend
+        run: |
+          cat > .env << ENVEOF
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          ALGORITHM=${{ secrets.ALGORITHM }}
+          ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
+          PGADMIN_EMAIL=${{ secrets.PGADMIN_EMAIL }}
+          PGADMIN_PASSWORD=${{ secrets.PGADMIN_PASSWORD }}
+          ENVEOF
+
+      - name: Start backend services
+        working-directory: backend
+        run: |
+          docker compose up -d postgres fastapi
+          echo "Waiting for FastAPI..."
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/docs && break
+            sleep 2
+          done
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        working-directory: frontend
+        run: pnpm exec playwright install --with-deps chromium firefox
+
+      - name: Run E2E tests
+        working-directory: frontend
+        run: pnpm test:e2e
+        env:
+          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7
+
+      - name: Stop backend services
+        if: always()
+        working-directory: backend
+        run: docker compose down
