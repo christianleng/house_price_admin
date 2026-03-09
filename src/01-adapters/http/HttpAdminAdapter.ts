@@ -4,6 +4,9 @@ import type {
   StagnantProperty,
   QualityScore,
   CitiesPerformanceStats,
+  AdminPropertiesResponse,
+  AdminPropertiesFilters,
+  AdminProperty,
 } from "@/00-domain/entities";
 import { API_ENDPOINTS } from "./EndPoints";
 import { apiClient } from "./ApiClient";
@@ -74,6 +77,35 @@ interface CityPerformanceDto {
 
 interface CitiesPerformanceDto {
   cities: CityPerformanceDto[];
+}
+
+interface AdminPropertyDto {
+  id: string;
+  reference: string | null;
+  title: string;
+  city: string;
+  postal_code: string;
+  transaction_type: TransactionType;
+  property_type: string;
+  price: number | null;
+  rent_price_monthly: number | null;
+  surface_area: number;
+  rooms: number;
+  energy_rating: string;
+  is_active: boolean;
+  photos_count: number;
+  views_count: number;
+  created_at: string;
+  updated_at: string;
+  thumbnail_url: string | null;
+}
+
+interface AdminPropertiesDto {
+  items: AdminPropertyDto[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
 }
 
 function mapStagnantProperty(dto: StagnantPropertyDto): StagnantProperty {
@@ -151,6 +183,39 @@ function mapCitiesPerformance(
   };
 }
 
+function mapAdminProperty(dto: AdminPropertyDto): AdminProperty {
+  return {
+    id: dto.id,
+    reference: dto.reference,
+    title: dto.title,
+    city: dto.city,
+    postalCode: dto.postal_code,
+    transactionType: dto.transaction_type,
+    propertyType: dto.property_type,
+    price: dto.price,
+    rentPriceMonthly: dto.rent_price_monthly,
+    surfaceArea: dto.surface_area,
+    rooms: dto.rooms,
+    energyRating: dto.energy_rating,
+    isActive: dto.is_active,
+    photosCount: dto.photos_count,
+    viewsCount: dto.views_count,
+    createdAt: dto.created_at,
+    updatedAt: dto.updated_at,
+    thumbnailUrl: dto.thumbnail_url,
+  };
+}
+
+function mapAdminProperties(dto: AdminPropertiesDto): AdminPropertiesResponse {
+  return {
+    items: dto.items.map(mapAdminProperty),
+    total: dto.total,
+    page: dto.page,
+    limit: dto.limit,
+    pages: dto.pages,
+  };
+}
+
 export const adminService = {
   async getGlobalStats(): Promise<PropertyGlobalStats> {
     const dto = await apiClient.get<GlobalStatsDto>(API_ENDPOINTS.ADMIN.STATS);
@@ -170,5 +235,27 @@ export const adminService = {
       API_ENDPOINTS.ADMIN.STATS_CITIES,
     );
     return mapCitiesPerformance(dto);
+  },
+
+  async getAdminProperties(
+    filters: AdminPropertiesFilters,
+  ): Promise<AdminPropertiesResponse> {
+    const dto = await apiClient.get<AdminPropertiesDto>(
+      API_ENDPOINTS.ADMIN.PROPERTIES,
+      {
+        params: {
+          search: filters.search,
+          transaction_type: filters.transactionType,
+          status: filters.status,
+          city: filters.city,
+          energy_rating: filters.energyRating,
+          price_min: filters.priceMin,
+          price_max: filters.priceMax,
+          page: filters.page ?? 1,
+          limit: filters.limit ?? 20,
+        },
+      },
+    );
+    return mapAdminProperties(dto);
   },
 };

@@ -21,7 +21,6 @@ export const NAV_MAIN = [
   { title: "Ventes", url: "/sell", icon: IconHomeDollar },
   { title: "Locations", url: "/locations", icon: IconHomeHeart },
   { title: "Villes", url: "/city", icon: IconMapPin },
-  { title: "Villes", url: "/city", icon: IconMapPin },
 ] as const satisfies readonly NavItem[];
 
 export const NAV_SECONDARY = [

@@ -100,3 +100,46 @@ export interface CityPerformance {
 export interface CitiesPerformanceStats {
   cities: CityPerformance[];
 }
+
+// ── Admin Properties ────────────────────────────────────────────────────────
+
+export interface AdminProperty {
+  id: string;
+  reference: string | null;
+  title: string;
+  city: string;
+  postalCode: string;
+  transactionType: TransactionType;
+  propertyType: string;
+  price: number | null;
+  rentPriceMonthly: number | null;
+  surfaceArea: number;
+  rooms: number;
+  energyRating: string;
+  isActive: boolean;
+  photosCount: number;
+  viewsCount: number;
+  createdAt: string;
+  updatedAt: string;
+  thumbnailUrl: string | null;
+}
+
+export interface AdminPropertiesResponse {
+  items: AdminProperty[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+export interface AdminPropertiesFilters {
+  search?: string;
+  transactionType?: string;
+  status?: string;
+  city?: string;
+  energyRating?: string;
+  priceMin?: number;
+  priceMax?: number;
+  page?: number;
+  limit?: number;
+}

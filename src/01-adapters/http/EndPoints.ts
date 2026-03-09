@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
     STATS: "/api/admin/stats",
     STATS_MONTHLY: "/api/admin/stats/monthly",
     STATS_CITIES: "/api/admin/stats/cities",
+    PROPERTIES: "/api/admin/properties",
   },
 
   PROPERTIES: {

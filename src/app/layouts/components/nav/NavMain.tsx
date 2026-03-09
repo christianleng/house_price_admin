@@ -22,17 +22,12 @@ export function NavMain({ items }: { items: readonly NavItem[] }) {
       <SidebarMenu className="flex gap-2">
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <Link to={item.url}>
-              <SidebarMenuButton
-                tooltip={item.title}
-                size="lg"
-                className="hover:cursor-pointer"
-                isActive={isActive(item.url)}
-              >
+            <SidebarMenuButton asChild size="lg" isActive={isActive(item.url)}>
+              <Link to={item.url}>
                 {item.icon && <item.icon />}
                 <span className="text-base">{item.title}</span>
-              </SidebarMenuButton>
-            </Link>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
