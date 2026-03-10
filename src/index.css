@@ -88,7 +88,7 @@
   /* ── Sidebar ───────────────────────────────────── */
   --sidebar-background: #ffffff;
   --sidebar-foreground: #0f2340;
-  --sidebar-accent: #e8f0f8;
+  --sidebar-accent: #d4dfe9;
   --sidebar-accent-foreground: #0f2340;
   --sidebar-border: #dce4ee;
   --sidebar-ring: #a8bedc;
@@ -179,7 +179,7 @@
   /* ── Sidebar dark ──────────────────────────────── */
   --sidebar-background: #0c1623;
   --sidebar-foreground: #dce8f5;
-  --sidebar-accent: #152338;
+  --sidebar-accent: #1e2f45;
   --sidebar-accent-foreground: #dce8f5;
   --sidebar-border: rgba(255, 255, 255, 0.07);
   --sidebar-ring: rgba(76, 150, 224, 0.15);
