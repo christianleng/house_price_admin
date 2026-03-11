@@ -143,3 +143,103 @@ export interface AdminPropertiesFilters {
   page?: number;
   limit?: number;
 }
+
+export interface PhotoDetail {
+  id: string;
+  url: string;
+  is_primary: boolean;
+  order: number;
+}
+
+export interface PropertyDetail {
+  id: string;
+  agentId: string;
+  reference: string;
+
+  title: string;
+  description: string | null;
+
+  address: string | null;
+  neighborhood: string;
+  city: string;
+  district: string;
+  postalCode: string;
+  latitude: number;
+  longitude: number;
+
+  price: number | null;
+  pricePerSqm: number | null;
+  rentPriceMonthly: number | null;
+  deposit: number | null;
+  chargesIncluded: boolean | null;
+  transactionType: TransactionType;
+
+  propertyType: string;
+  surfaceArea: number;
+  rooms: number;
+  bedrooms: number;
+  bathrooms: number | null;
+  toilets: number | null;
+  floors: number | null;
+  floorNumber: number | null;
+
+  hasCave: boolean | null;
+  hasElevator: boolean;
+  hasBalcony: boolean;
+  hasTerrace: boolean;
+  hasGarden: boolean;
+  hasParking: boolean;
+  parkingSpaces: number | null;
+
+  energyRating: string | null;
+  heatingType: string | null;
+
+  constructionYear: number | null;
+  availableFrom: string | null;
+  isFurnished: boolean | null;
+
+  photos: PhotoDetail[];
+  thumbnailUrl: string | null;
+
+  createdAt: string;
+  updatedAt: string | null;
+  isActive: boolean;
+}
+
+export interface UpdatePropertyPayload {
+  title?: string;
+  description?: string | null;
+  address?: string | null;
+  neighborhood?: string;
+  city?: string;
+  district?: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
+  price?: number | null;
+  rentPriceMonthly?: number | null;
+  deposit?: number | null;
+  chargesIncluded?: boolean | null;
+  transactionType?: string;
+  propertyType?: string;
+  surfaceArea?: number;
+  rooms?: number;
+  bedrooms?: number;
+  bathrooms?: number | null;
+  toilets?: number | null;
+  floors?: number | null;
+  floorNumber?: number | null;
+  hasCave?: boolean | null;
+  hasElevator?: boolean;
+  hasBalcony?: boolean;
+  hasTerrace?: boolean;
+  hasGarden?: boolean;
+  hasParking?: boolean;
+  parkingSpaces?: number | null;
+  energyRating?: string | null;
+  heatingType?: string | null;
+  constructionYear?: number | null;
+  availableFrom?: string | null;
+  isFurnished?: boolean | null;
+  isActive?: boolean;
+}

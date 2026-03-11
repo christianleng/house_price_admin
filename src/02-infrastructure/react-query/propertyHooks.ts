@@ -2,8 +2,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { propertyService } from "@/01-adapters/http/HttpPropertyAdapter";
 
 export const PROPERTY_KEYS = {
-  count: (params?: object) => ["properties", "count", params] as const,
-  recent: (limit: number) => ["properties", "recent", limit] as const,
+  all: () => ["properties"] as const,
+  count: (params?: object) =>
+    [...PROPERTY_KEYS.all(), "count", params] as const,
+  recent: (limit: number) => [...PROPERTY_KEYS.all(), "recent", limit] as const,
 };
 
 export const recentPropertiesQuery = (limit = 5) => ({

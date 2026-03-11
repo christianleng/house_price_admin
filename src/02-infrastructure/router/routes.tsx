@@ -52,27 +52,12 @@ export const routes = [
               return { Component: m.default };
             },
           },
-          {
-            path: "properties/new",
-            lazy: async () => {
-              const m =
-                await import("@/features/properties/components/PropertyCreatePage");
-              return { Component: m.default };
-            },
-          },
+
           {
             path: "properties/:id",
             lazy: async () => {
               const m =
                 await import("@/features/properties/components/PropertyDetailPage");
-              return { Component: m.default };
-            },
-          },
-          {
-            path: "properties/:id/edit",
-            lazy: async () => {
-              const m =
-                await import("@/features/properties/components/PropertyEditPage");
               return { Component: m.default };
             },
           },

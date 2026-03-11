@@ -4,12 +4,13 @@ import { tokenStorage } from "@/01-adapters/http/TokenStorageAdapter";
 import type { LoginCredentials } from "@/00-domain/entities";
 
 export const AUTH_KEYS = {
-  user: ["auth", "user"] as const,
+  all: () => ["auth"] as const,
+  user: () => [...AUTH_KEYS.all(), "user"] as const,
 };
 
 export function useCurrentUser(enabled: boolean) {
   return useQuery({
-    queryKey: AUTH_KEYS.user,
+    queryKey: AUTH_KEYS.user(),
     queryFn: authService.getMe,
     enabled,
     retry: (failureCount, error) => {
@@ -28,7 +29,7 @@ export function useLoginMutation() {
     mutationFn: (credentials: LoginCredentials) =>
       authService.login(credentials),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: AUTH_KEYS.user });
+      await queryClient.invalidateQueries({ queryKey: AUTH_KEYS.user() });
     },
   });
 }
@@ -40,8 +41,8 @@ export function useLogoutMutation() {
     mutationFn: authService.logout,
     onSettled: () => {
       tokenStorage.clearToken();
-      queryClient.setQueryData(AUTH_KEYS.user, null);
-      queryClient.removeQueries({ queryKey: AUTH_KEYS.user });
+      queryClient.setQueryData(AUTH_KEYS.user(), null);
+      queryClient.removeQueries({ queryKey: AUTH_KEYS.user() });
       window.location.href = "/auth/login";
     },
   });
