@@ -7,6 +7,8 @@ import type {
   AdminPropertiesResponse,
   AdminPropertiesFilters,
   AdminProperty,
+  PropertyDetail,
+  UpdatePropertyPayload,
 } from "@/00-domain/entities";
 import { API_ENDPOINTS } from "./EndPoints";
 import { apiClient } from "./ApiClient";
@@ -106,6 +108,59 @@ interface AdminPropertiesDto {
   page: number;
   limit: number;
   pages: number;
+}
+
+interface PhotoDetailDto {
+  id: string;
+  url: string;
+  is_primary: boolean;
+  order: number;
+}
+
+interface PropertyDetailDto {
+  id: string;
+  agent_id: string;
+  reference: string;
+  title: string;
+  description: string | null;
+  address: string | null;
+  neighborhood: string;
+  city: string;
+  district: string;
+  postal_code: string;
+  latitude: number;
+  longitude: number;
+  price: number | null;
+  price_per_sqm: number | null;
+  rent_price_monthly: number | null;
+  deposit: number | null;
+  charges_included: boolean | null;
+  transaction_type: TransactionType;
+  property_type: string;
+  surface_area: number;
+  rooms: number;
+  bedrooms: number;
+  bathrooms: number | null;
+  toilets: number | null;
+  floors: number | null;
+  floor_number: number | null;
+  has_cave: boolean | null;
+  has_elevator: boolean;
+  has_balcony: boolean;
+  has_terrace: boolean;
+  has_garden: boolean;
+  has_parking: boolean;
+  parking_spaces: number | null;
+  energy_rating: string | null;
+  heating_type: string | null;
+  construction_year: number | null;
+  available_from: string | null;
+  is_furnished: boolean | null;
+  photos: PhotoDetailDto[];
+  thumbnail_url: string | null;
+  created_at: string;
+  updated_at: string | null;
+  is_active: boolean;
 }
 
 function mapStagnantProperty(dto: StagnantPropertyDto): StagnantProperty {
@@ -216,6 +271,99 @@ function mapAdminProperties(dto: AdminPropertiesDto): AdminPropertiesResponse {
   };
 }
 
+function mapPropertyDetail(dto: PropertyDetailDto): PropertyDetail {
+  return {
+    id: dto.id,
+    agentId: dto.agent_id,
+    reference: dto.reference,
+    title: dto.title,
+    description: dto.description,
+    address: dto.address,
+    neighborhood: dto.neighborhood,
+    city: dto.city,
+    district: dto.district,
+    postalCode: dto.postal_code,
+    latitude: dto.latitude,
+    longitude: dto.longitude,
+    price: dto.price,
+    pricePerSqm: dto.price_per_sqm,
+    rentPriceMonthly: dto.rent_price_monthly,
+    deposit: dto.deposit,
+    chargesIncluded: dto.charges_included,
+    transactionType: dto.transaction_type,
+    propertyType: dto.property_type,
+    surfaceArea: dto.surface_area,
+    rooms: dto.rooms,
+    bedrooms: dto.bedrooms,
+    bathrooms: dto.bathrooms,
+    toilets: dto.toilets,
+    floors: dto.floors,
+    floorNumber: dto.floor_number,
+    hasCave: dto.has_cave,
+    hasElevator: dto.has_elevator,
+    hasBalcony: dto.has_balcony,
+    hasTerrace: dto.has_terrace,
+    hasGarden: dto.has_garden,
+    hasParking: dto.has_parking,
+    parkingSpaces: dto.parking_spaces,
+    energyRating: dto.energy_rating,
+    heatingType: dto.heating_type,
+    constructionYear: dto.construction_year,
+    availableFrom: dto.available_from,
+    isFurnished: dto.is_furnished,
+    photos: dto.photos.map((p) => ({
+      id: p.id,
+      url: p.url,
+      is_primary: p.is_primary,
+      order: p.order,
+    })),
+    thumbnailUrl: dto.thumbnail_url,
+    createdAt: dto.created_at,
+    updatedAt: dto.updated_at,
+    isActive: dto.is_active,
+  };
+}
+
+function toSnakeCase(payload: UpdatePropertyPayload): Record<string, unknown> {
+  return {
+    title: payload.title,
+    description: payload.description,
+    address: payload.address,
+    neighborhood: payload.neighborhood,
+    city: payload.city,
+    district: payload.district,
+    postal_code: payload.postalCode,
+    latitude: payload.latitude,
+    longitude: payload.longitude,
+    price: payload.price,
+    rent_price_monthly: payload.rentPriceMonthly,
+    deposit: payload.deposit,
+    charges_included: payload.chargesIncluded,
+    transaction_type: payload.transactionType,
+    property_type: payload.propertyType,
+    surface_area: payload.surfaceArea,
+    rooms: payload.rooms,
+    bedrooms: payload.bedrooms,
+    bathrooms: payload.bathrooms,
+    toilets: payload.toilets,
+    floors: payload.floors,
+    floor_number: payload.floorNumber,
+    has_cave: payload.hasCave,
+    has_elevator: payload.hasElevator,
+    has_balcony: payload.hasBalcony,
+    has_terrace: payload.hasTerrace,
+    has_garden: payload.hasGarden,
+    has_parking: payload.hasParking,
+    parking_spaces: payload.parkingSpaces,
+    energy_rating: payload.energyRating,
+    heating_type: payload.heatingType,
+    construction_year: payload.constructionYear,
+    available_from: payload.availableFrom,
+    is_furnished: payload.isFurnished,
+    is_active: payload.isActive,
+  };
+}
+
 export const adminService = {
   async getGlobalStats(): Promise<PropertyGlobalStats> {
     const dto = await apiClient.get<GlobalStatsDto>(API_ENDPOINTS.ADMIN.STATS);
@@ -257,5 +405,27 @@ export const adminService = {
       },
     );
     return mapAdminProperties(dto);
+  },
+
+  async getPropertyById(id: string): Promise<PropertyDetail> {
+    const dto = await apiClient.get<PropertyDetailDto>(
+      API_ENDPOINTS.ADMIN.PROPERTY_DETAIL(id),
+    );
+    return mapPropertyDetail(dto);
+  },
+
+  async updateProperty(
+    id: string,
+    payload: UpdatePropertyPayload,
+  ): Promise<PropertyDetail> {
+    const dto = await apiClient.patch<PropertyDetailDto>(
+      API_ENDPOINTS.ADMIN.PROPERTY_UPDATE(id),
+      toSnakeCase(payload),
+    );
+    return mapPropertyDetail(dto);
+  },
+
+  async deleteProperty(id: string): Promise<void> {
+    await apiClient.delete(API_ENDPOINTS.ADMIN.PROPERTY_DELETE(id));
   },
 };

@@ -126,16 +126,13 @@ const columns: ColumnDef[] = [
   {
     id: "statut",
     header: "Statut",
-    className: "text-center",
     cell: (property) => (
-      <span className="flex justify-center">
-        <span
-          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-            property.isActive ? "Actif" : "Inactif"
-          }`}
-        >
-          {property.isActive ? "Actif" : "Inactif"}
-        </span>
+      <span
+        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+          property.isActive ? "Actif" : "Inactif"
+        }`}
+      >
+        {property.isActive ? "Actif" : "Inactif"}
       </span>
     ),
   },

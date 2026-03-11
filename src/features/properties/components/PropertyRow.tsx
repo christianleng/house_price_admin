@@ -1,17 +1,11 @@
 import type { AdminProperty } from "@/00-domain/entities";
+import { getPropertyStatus } from "@/00-domain/use-cases/properties/getPropertyStatus";
 import { DPE_COLORS } from "@/shared/constants/dpe";
 import { TRANSACTION_TYPES } from "@/shared/constants/property";
 import { Badge } from "@/shared/ui/badge";
 import { TableCell, TableRow } from "@/shared/ui/table";
 import { formatPrice } from "@/shared/utils/format";
 import { IconBuilding } from "@tabler/icons-react";
-
-const STATUS_CLASSES = {
-  active:
-    "bg-alert-success-bg text-status-success border border-alert-success-border",
-  inactive:
-    "bg-alert-urgent-bg text-status-error border border-alert-urgent-border",
-} as const;
 
 interface PropertyRowProps {
   property: AdminProperty;
@@ -27,6 +21,8 @@ export function PropertyRow({ property, onClick }: PropertyRowProps) {
       : property.rentPriceMonthly != null
         ? `${property.rentPriceMonthly.toLocaleString("fr-FR")} €/mois`
         : "—";
+
+  const { className, label } = getPropertyStatus(property.isActive);
 
   return (
     <TableRow
@@ -80,13 +76,11 @@ export function PropertyRow({ property, onClick }: PropertyRowProps) {
       <TableCell className="text-muted-foreground tabular-nums">
         {property.surfaceArea} m²
       </TableCell>
-      <TableCell className="text-center">
+      <TableCell>
         <span
-          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-            property.isActive ? STATUS_CLASSES.active : STATUS_CLASSES.inactive
-          }`}
+          className={`items-center rounded-full px-2 py-0.5 text-xs font-medium ${className}`}
         >
-          {property.isActive ? "Actif" : "Inactif"}
+          {label}
         </span>
       </TableCell>
     </TableRow>
