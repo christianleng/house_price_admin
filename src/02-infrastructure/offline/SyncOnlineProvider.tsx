@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useSyncOnline } from "./useSyncOnline";
+import { useSyncOnline } from "./UseSyncOnline";
 
 interface SyncOnlineProviderProps {
   children: ReactNode;

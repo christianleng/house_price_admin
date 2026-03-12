@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/app/layouts/components/AppSidebar";
 import { SiteHeader } from "@/app/layouts/components/SiteHeader";
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
+import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { Outlet } from "react-router";
 
@@ -18,6 +19,7 @@ const RootLayout = () => {
       >
         <AppSidebar variant="inset" />
         <SidebarInset className="flex-1">
+          <Toaster />
           <SiteHeader />
           <Outlet />
         </SidebarInset>

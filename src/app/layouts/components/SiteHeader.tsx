@@ -2,6 +2,8 @@ import { Separator } from "@/shared/ui/separator";
 import { SidebarTrigger } from "@/shared/ui/sidebar";
 import { Link } from "react-router";
 import { IconPlus, IconCalendar } from "@tabler/icons-react";
+import { OfflineBanner } from "@/02-infrastructure/offline/OfflineBanner";
+import { PendingMutationsBadge } from "@/02-infrastructure/offline/PendingMutationsBadge";
 
 export function SiteHeader() {
   return (
@@ -14,6 +16,9 @@ export function SiteHeader() {
         />
 
         <div className="ml-auto flex items-center gap-2">
+          <PendingMutationsBadge />
+          <OfflineBanner />
+
           <button className="flex items-center shadow-sidebar-active gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
             <IconCalendar className="size-3.5" />6 derniers mois
           </button>
