@@ -1,14 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  IconDashboard,
-  IconInnerShadowTop,
-  IconSettings,
-  IconBuilding,
-  IconHelp,
-} from "@tabler/icons-react";
-
+import { IconInnerShadowTop } from "@tabler/icons-react";
 import {
   Sidebar,
   SidebarContent,
@@ -19,46 +12,16 @@ import {
   SidebarMenuItem,
 } from "@/shared/ui/sidebar";
 import { NavMain } from "./nav/NavMain";
-import { NavDocuments } from "./nav/NavDocuments";
 import { NavSecondary } from "./nav/NavSecondary";
 import { NavUser } from "./nav/NavUser";
 import { Link } from "react-router";
+import { NAV_MAIN, NAV_SECONDARY } from "@/shared/constants/sidebar";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/",
-      icon: IconDashboard,
-    },
-    {
-      title: "Propriétés",
-      url: "/properties",
-      icon: IconBuilding,
-    },
-  ],
-
-  navSecondary: [
-    {
-      title: "Mon profil",
-      url: "/profile",
-      icon: IconSettings,
-    },
-    {
-      title: "Aide",
-      url: "#",
-      icon: IconHelp,
-    },
-  ],
-
-  documents: [],
-};
+const USER = {
+  name: "shadcn",
+  email: "m@example.com",
+  avatar: "/avatars/shadcn.jpg",
+} as const;
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -79,12 +42,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="bg-muted">
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={NAV_MAIN} />
+        <NavSecondary items={NAV_SECONDARY} />
       </SidebarContent>
       <SidebarFooter className="bg-muted">
-        <NavUser user={data.user} />
+        <NavUser user={USER} />
       </SidebarFooter>
     </Sidebar>
   );

@@ -8,10 +8,6 @@ export const propertyService: IPropertyService = {
     return apiClient.get<number>(API_ENDPOINTS.PROPERTIES.COUNT, { params });
   },
 
-  async getByCities(): Promise<Record<string, number>> {
-    return apiClient.get(API_ENDPOINTS.PROPERTIES.BY_CITIES);
-  },
-
   async getRecent(
     limit = 5,
   ): Promise<{ items: RecentProperty[]; total: number }> {

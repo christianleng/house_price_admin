@@ -11,8 +11,8 @@ import { formatPercent } from "@/shared/utils/format";
 function TrendIcon({ value }: { value: number | null }) {
   if (value == null) return <IconMinus className="size-3" />;
   if (value > 0)
-    return <IconArrowUpRight className="size-3 text-emerald-500" />;
-  return <IconArrowDownRight className="size-3 text-red-500" />;
+    return <IconArrowUpRight className="size-3 text-status-success" />;
+  return <IconArrowDownRight className="size-3 text-status-error" />;
 }
 
 export interface KpiCardProps {
@@ -23,26 +23,8 @@ export interface KpiCardProps {
   icon: React.ElementType;
   loading: boolean;
   href?: string;
-  variant?: "default" | "warning" | "danger";
+  colorClass?: string;
 }
-
-const variantClasses = {
-  default: "border-border",
-  warning: "border-yellow-400/40 bg-yellow-50/50 dark:bg-yellow-950/20",
-  danger: "border-red-400/40 bg-red-50/50 dark:bg-red-950/20",
-};
-
-const iconWrapperClasses = {
-  default: "bg-muted",
-  warning: "bg-yellow-100 dark:bg-yellow-900/40",
-  danger: "bg-red-100 dark:bg-red-900/40",
-};
-
-const iconClasses = {
-  default: "text-muted-foreground",
-  warning: "text-yellow-600",
-  danger: "text-red-600",
-};
 
 export function KpiCard({
   title,
@@ -52,20 +34,18 @@ export function KpiCard({
   icon: Icon,
   loading,
   href,
-  variant = "default",
+  colorClass = "text-foreground",
 }: KpiCardProps) {
   const card = (
     <div
-      className={`kpi-card-grid rounded-sm border bg-card px-5 pt-5 pb-4 ${variantClasses[variant]}`}
+      data-testid="kpi-card"
+      data-kpi-title={title}
+      className="kpi-card-grid rounded-sm shadow-sidebar-active bg-card px-5 pt-5 pb-4"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs font-medium uppercase text-muted-foreground leading-snug">
-          {title}
-        </p>
-        <div
-          className={`rounded-sm p-2 shrink-0 ${iconWrapperClasses[variant]}`}
-        >
-          <Icon className={`size-4 ${iconClasses[variant]}`} />
+        <p className="text-xs font-bold uppercase">{title}</p>
+        <div className="rounded-sm p-2 shrink-0 bg-muted">
+          <Icon className="size-4 text-muted-foreground" />
         </div>
       </div>
 
@@ -73,9 +53,7 @@ export function KpiCard({
         {loading ? (
           <Skeleton className="h-9 w-20" />
         ) : (
-          <p className="text-3xl font-bold tabular-nums text-foreground">
-            {value}
-          </p>
+          <p className={`text-3xl font-bold ${colorClass}`}>{value}</p>
         )}
       </div>
 
@@ -86,7 +64,11 @@ export function KpiCard({
         {trend != null && !loading && (
           <div className="flex items-center gap-1 text-xs">
             <TrendIcon value={trend} />
-            <span className={trend > 0 ? "text-emerald-600" : "text-red-600"}>
+            <span
+              className={
+                trend > 0 ? "text-status-success" : "text-status-error"
+              }
+            >
               {formatPercent(trend)}
             </span>
             <span className="text-muted-foreground">vs mois précédent</span>

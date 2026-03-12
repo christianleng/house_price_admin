@@ -1,20 +1,133 @@
 import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { IconBuilding, IconExternalLink } from "@tabler/icons-react";
 import { Badge } from "@/shared/ui/badge";
-import { Skeleton } from "@/shared/ui/skeleton";
-import type { RecentProperty } from "@/00-domain/entities";
 import { formatPrice } from "@/shared/utils/format";
+import { useRecentProperties } from "@/02-infrastructure/react-query/propertyHooks";
+import { TRANSACTION_TYPES } from "@/shared/constants/property";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/ui/table";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  type ColumnDef,
+} from "@tanstack/react-table";
+import type { RecentProperty } from "@/00-domain/entities";
 
-interface RecentSectionProps {
-  items: RecentProperty[] | undefined;
-  loadingRecent: boolean;
-}
+const STATUS_CLASSES = {
+  active:
+    "bg-alert-success-bg text-status-success border border-alert-success-border",
+  inactive:
+    "bg-alert-urgent-bg text-status-error border border-alert-urgent-border",
+} as const;
 
-export function RecentSection({ items, loadingRecent }: RecentSectionProps) {
+const columns: ColumnDef<RecentProperty>[] = [
+  {
+    id: "bien",
+    header: "Bien",
+    cell: ({ row }) => {
+      const property = row.original;
+      return (
+        <div className="flex items-center gap-3">
+          {property.thumbnail_url ? (
+            <img
+              src={property.thumbnail_url}
+              alt={property.title}
+              className="size-10 rounded-sm object-cover shrink-0"
+            />
+          ) : (
+            <div className="size-10 rounded-sm bg-muted flex items-center justify-center shrink-0">
+              <IconBuilding className="size-4 text-muted-foreground" />
+            </div>
+          )}
+          <div className="min-w-0">
+            <p className="font-medium text-foreground">
+              {/* truncate max-w-45 */}
+              {property.title}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {property.reference}
+            </p>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "city",
+    header: "Ville",
+    cell: ({ getValue }) => (
+      <span className="text-muted-foreground">{getValue<string>()}</span>
+    ),
+  },
+  {
+    id: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <Badge variant="secondary" className="text-xs capitalize">
+        {row.original.transaction_type === TRANSACTION_TYPES.SALE
+          ? "Vente"
+          : "Location"}
+      </Badge>
+    ),
+  },
+  {
+    id: "prix",
+    header: () => <span className="flex justify-end">Prix</span>,
+    cell: ({ row }) => {
+      const property = row.original;
+      const label =
+        property.transaction_type === TRANSACTION_TYPES.SALE
+          ? formatPrice(property.price)
+          : `${property.rent_price_monthly} €/mois`;
+      return (
+        <span className="flex justify-end font-medium tabular-nums">
+          {label}
+        </span>
+      );
+    },
+  },
+  {
+    id: "statut",
+    header: () => <span className="flex justify-center">Statut</span>,
+    cell: ({ row }) => {
+      const isActive = row.original.is_active;
+      return (
+        <span className="flex justify-center">
+          <span
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold text-status-success ${
+              isActive ? STATUS_CLASSES.active : STATUS_CLASSES.inactive
+            }`}
+          >
+            {isActive ? "Actif" : "Inactif"}
+          </span>
+        </span>
+      );
+    },
+  },
+];
+
+export function RecentSection() {
+  const { data } = useRecentProperties(5);
+  const navigate = useNavigate();
+
+  const table = useReactTable({
+    data: data.items,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
-    <section>
+    <section className="rounded-sm shadow-sidebar-active bg-card p-5 h-full">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold uppercase text-muted-foreground">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           Dernières propriétés ajoutées
         </h2>
         <Link
@@ -26,96 +139,37 @@ export function RecentSection({ items, loadingRecent }: RecentSectionProps) {
       </div>
 
       <div className="rounded-sm border bg-card overflow-hidden">
-        {loadingRecent ? (
-          <div className="p-4 space-y-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-12 w-full" />
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="bg-muted/40">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                  </TableHead>
+                ))}
+              </TableRow>
             ))}
-          </div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-muted/40">
-                <th className="text-left px-4 py-3 text-xs font-medium uppercase text-muted-foreground">
-                  Bien
-                </th>
-                <th className="text-left px-4 py-3 text-xs font-medium uppercase text-muted-foreground hidden md:table-cell">
-                  Ville
-                </th>
-                <th className="text-left px-4 py-3 text-xs font-medium uppercase text-muted-foreground">
-                  Type
-                </th>
-                <th className="text-right px-4 py-3 text-xs font-medium uppercase text-muted-foreground">
-                  Prix
-                </th>
-                <th className="text-center px-4 py-3 text-xs font-medium uppercase text-muted-foreground hidden sm:table-cell">
-                  Statut
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {items?.map((property) => (
-                <tr
-                  key={property.id}
-                  className="hover:bg-muted/30 transition-colors cursor-pointer"
-                  onClick={() =>
-                    (window.location.href = `/properties/${property.id}`)
-                  }
-                >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {property.thumbnail_url ? (
-                        <img
-                          src={property.thumbnail_url}
-                          alt={property.title}
-                          className="size-10 rounded-sm object-cover shrink-0"
-                        />
-                      ) : (
-                        <div className="size-10 rounded-sm bg-muted flex items-center justify-center shrink-0">
-                          <IconBuilding className="size-4 text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="font-medium text-foreground truncate max-w-45">
-                          {property.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {property.reference}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                    {property.city}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge variant="secondary" className="text-xs capitalize">
-                      {property.transaction_type === "sale"
-                        ? "Vente"
-                        : "Location"}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-right font-medium tabular-nums">
-                    {property.transaction_type === "sale"
-                      ? formatPrice(property.price)
-                      : `${property.rent_price_monthly} €/mois`}
-                  </td>
-                  <td className="px-4 py-3 text-center hidden sm:table-cell">
-                    <span
-                      className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium ${
-                        property.is_active
-                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                          : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                      }`}
-                    >
-                      {property.is_active ? "Actif" : "Inactif"}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                className="hover:bg-muted/30 transition-colors cursor-pointer"
+                onClick={() => navigate(`/properties/${row.original.id}`)}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </section>
   );

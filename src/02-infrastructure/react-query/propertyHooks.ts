@@ -1,32 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { propertyService } from "@/01-adapters/http/HttpPropertyAdapter";
 
 export const PROPERTY_KEYS = {
-  count: (params?: object) => ["properties", "count", params] as const,
-  byCities: () => ["properties", "by-cities"] as const,
-  recent: (limit: number) => ["properties", "recent", limit] as const,
+  all: () => ["properties"] as const,
+  count: (params?: object) =>
+    [...PROPERTY_KEYS.all(), "count", params] as const,
+  recent: (limit: number) => [...PROPERTY_KEYS.all(), "recent", limit] as const,
 };
 
-export function usePropertyCount(params?: { status?: string }) {
-  return useQuery({
-    queryKey: PROPERTY_KEYS.count(params),
-    queryFn: () => propertyService.getCount(params),
-    staleTime: 1000 * 60 * 5,
-  });
-}
+export const recentPropertiesQuery = (limit = 5) => ({
+  queryKey: PROPERTY_KEYS.recent(limit),
+  queryFn: () => propertyService.getRecent(limit),
+  staleTime: 1000 * 60 * 2,
+});
 
-export function usePropertiesByCities() {
-  return useQuery({
-    queryKey: PROPERTY_KEYS.byCities(),
-    queryFn: propertyService.getByCities,
-    staleTime: 1000 * 60 * 5,
-  });
+export const propertyCountQuery = (params?: { status?: string }) => ({
+  queryKey: PROPERTY_KEYS.count(params),
+  queryFn: () => propertyService.getCount(params),
+  staleTime: 1000 * 60 * 5,
+});
+
+export function usePropertyCount(params?: { status?: string }) {
+  return useSuspenseQuery(propertyCountQuery(params));
 }
 
 export function useRecentProperties(limit = 5) {
-  return useQuery({
-    queryKey: PROPERTY_KEYS.recent(limit),
-    queryFn: () => propertyService.getRecent(limit),
-    staleTime: 1000 * 60 * 2,
-  });
+  return useSuspenseQuery(recentPropertiesQuery(limit));
 }

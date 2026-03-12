@@ -1,26 +1,20 @@
 "use client";
 
 import * as React from "react";
-import { type Icon } from "@tabler/icons-react";
-
 import {
   SidebarGroup,
-  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/ui/sidebar";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
+import type { NavItem } from "@/shared/constants/sidebar";
 
 export function NavSecondary({
   items,
   ...props
 }: {
-  items: {
-    title: string;
-    url: string;
-    icon: Icon;
-  }[];
+  items: readonly NavItem[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const { pathname } = useLocation();
 
@@ -30,21 +24,19 @@ export function NavSecondary({
   };
 
   return (
-    <SidebarGroup {...props}>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
+    <SidebarGroup className="mt-auto" {...props}>
+      <SidebarMenu>
+        {items.map((item) => (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton asChild size="lg" isActive={isActive(item.url)}>
+              <Link to={item.url}>
+                {item.icon && <item.icon />}
+                <span className="text-base">{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
     </SidebarGroup>
   );
 }

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { QueryProvider } from "./QueryProvider";
 import { AuthProvider } from "@/02-infrastructure/auth/AuthProvider";
+import { SyncOnlineProvider } from "@/02-infrastructure/offline/SyncOnlineProvider";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -9,7 +10,9 @@ interface AppProvidersProps {
 export function AppProviders({ children }: AppProvidersProps) {
   return (
     <QueryProvider>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <SyncOnlineProvider>{children}</SyncOnlineProvider>
+      </AuthProvider>
     </QueryProvider>
   );
 }

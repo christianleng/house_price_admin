@@ -8,6 +8,13 @@ export const API_ENDPOINTS = {
   ADMIN: {
     STATS: "/api/admin/stats",
     STATS_MONTHLY: "/api/admin/stats/monthly",
+    STATS_CITIES: "/api/admin/stats/cities",
+    PROPERTIES: "/api/admin/properties",
+    PROPERTY_DETAIL: (id: string) => `/api/admin/properties/${id}`,
+    PROPERTY_UPDATE: (id: string) => `/api/admin/properties/${id}`,
+    PROPERTY_DELETE: (id: string) => `/api/admin/properties/${id}`,
+    AGENT_PROPERTIES: (agentId: string) =>
+      `/api/admin/properties/agent/${agentId}`,
   },
 
   PROPERTIES: {

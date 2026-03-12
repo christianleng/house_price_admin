@@ -1,6 +1,17 @@
 import RootErrorBoundary from "@/shared/pages/RootErrorBoundary";
 import RootLayout from "../../app/layouts/RootLayout";
 import { ProtectedLayout } from "@/features/auth/components/ProtectedLayout";
+import { queryClient } from "../react-query/queryClient";
+import {
+  adminPropertiesQuery,
+  citiesPerformanceQuery,
+  globalStatsQuery,
+  monthlyStatsQuery,
+  propertyDetailQuery,
+} from "../react-query/adminHooks";
+import { recentPropertiesQuery } from "../react-query/propertyHooks";
+import { filtersFromParams } from "@/shared/utils/propertyFilters";
+import type { LoaderFunctionArgs } from "react-router";
 
 export const routes = [
   {
@@ -14,42 +25,46 @@ export const routes = [
         children: [
           {
             index: true,
+            loader: () => {
+              queryClient.prefetchQuery(globalStatsQuery);
+              queryClient.prefetchQuery(monthlyStatsQuery(6));
+              queryClient.prefetchQuery(recentPropertiesQuery(5));
+              queryClient.prefetchQuery(citiesPerformanceQuery);
+              return null;
+            },
             lazy: async () => {
               const m =
                 await import("@/features/dashboard/components/DashboardPage");
               return { Component: m.default };
             },
           },
-
           {
             path: "properties",
+            loader: ({ request }: LoaderFunctionArgs) => {
+              const url = new URL(request.url);
+              queryClient.prefetchQuery(
+                adminPropertiesQuery(filtersFromParams(url.searchParams)),
+              );
+              return null;
+            },
             lazy: async () => {
               const m =
                 await import("@/features/properties/components/PropertyListPage");
               return { Component: m.default };
             },
           },
-          {
-            path: "properties/new",
-            lazy: async () => {
-              const m =
-                await import("@/features/properties/components/PropertyCreatePage");
-              return { Component: m.default };
-            },
-          },
+
           {
             path: "properties/:id",
+            loader: ({ params }: LoaderFunctionArgs) => {
+              if (params.id) {
+                queryClient.prefetchQuery(propertyDetailQuery(params.id));
+              }
+              return null;
+            },
             lazy: async () => {
               const m =
                 await import("@/features/properties/components/PropertyDetailPage");
-              return { Component: m.default };
-            },
-          },
-          {
-            path: "properties/:id/edit",
-            lazy: async () => {
-              const m =
-                await import("@/features/properties/components/PropertyEditPage");
               return { Component: m.default };
             },
           },

@@ -1,9 +1,11 @@
 export const DPE_COLORS: Record<string, string> = {
-  A: "bg-green-700 text-white",
-  B: "bg-green-500 text-white",
-  C: "bg-lime-500 text-white",
-  D: "bg-yellow-400 text-black",
-  E: "bg-orange-400 text-white",
-  F: "bg-orange-600 text-white",
-  G: "bg-red-600 text-white",
-};
+  A: "bg-status-success text-white",
+  B: "bg-[#84cc16] text-white",
+  C: "bg-status-warning text-white",
+  D: "bg-status-urgent text-white",
+  E: "bg-status-error text-white",
+  F: "bg-status-error-dark text-white",
+  G: "bg-[#991b1b] text-white",
+} as const;
+
+export const ENERGY_RATINGS = ["A", "B", "C", "D", "E", "F", "G"] as const;
