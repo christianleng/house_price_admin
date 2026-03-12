@@ -40,6 +40,8 @@ export async function enqueue(
   console.log("queuedAt:", new Date(mutation.queuedAt).toISOString());
   console.groupEnd();
 
+  window.dispatchEvent(new Event("mutation-queue-changed"));
+
   return mutation;
 }
 
@@ -48,6 +50,7 @@ export async function enqueue(
  */
 export async function dequeue(mutationId: string): Promise<void> {
   await del(buildKey(mutationId), store);
+  window.dispatchEvent(new Event("mutation-queue-changed"));
 }
 
 /**
