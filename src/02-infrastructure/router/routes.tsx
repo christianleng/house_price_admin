@@ -7,6 +7,7 @@ import {
   citiesPerformanceQuery,
   globalStatsQuery,
   monthlyStatsQuery,
+  propertyDetailQuery,
 } from "../react-query/adminHooks";
 import { recentPropertiesQuery } from "../react-query/propertyHooks";
 import { filtersFromParams } from "@/shared/utils/propertyFilters";
@@ -55,6 +56,12 @@ export const routes = [
 
           {
             path: "properties/:id",
+            loader: ({ params }: LoaderFunctionArgs) => {
+              if (params.id) {
+                queryClient.prefetchQuery(propertyDetailQuery(params.id));
+              }
+              return null;
+            },
             lazy: async () => {
               const m =
                 await import("@/features/properties/components/PropertyDetailPage");
