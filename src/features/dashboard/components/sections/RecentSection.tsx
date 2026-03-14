@@ -19,15 +19,10 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import type { RecentProperty } from "@/00-domain/entities";
-import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property";
 import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
-
-const STATUS_CLASSES = {
-  active:
-    "bg-alert-success-bg text-status-success border border-alert-success-border",
-  inactive:
-    "bg-alert-urgent-bg text-status-error border border-alert-urgent-border",
-} as const;
+import { getPropertyStatus } from "@/00-domain/use-cases/properties/getPropertyStatus";
+import { PROPERTY_STATUS_STYLES } from "@/shared/utils/propertyStatus";
 
 const columns: ColumnDef<RecentProperty>[] = [
   {
@@ -98,14 +93,15 @@ const columns: ColumnDef<RecentProperty>[] = [
     header: () => <span className="flex justify-center">Statut</span>,
     cell: ({ row }) => {
       const isActive = row.original.isActive;
+      const status = getPropertyStatus(isActive);
+      const { className, label } = PROPERTY_STATUS_STYLES[status];
+
       return (
         <span className="flex justify-center">
           <span
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold text-status-success ${
-              isActive ? STATUS_CLASSES.active : STATUS_CLASSES.inactive
-            }`}
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold text-status-success ${className}`}
           >
-            {isActive ? "Actif" : "Inactif"}
+            {label}
           </span>
         </span>
       );

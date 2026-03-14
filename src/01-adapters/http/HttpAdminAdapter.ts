@@ -13,7 +13,7 @@ import type {
 import type { IAdminService } from "@/00-domain/ports";
 import { API_ENDPOINTS } from "./EndPoints";
 import { apiClient } from "./ApiClient";
-import type { TransactionType } from "@/00-domain/constants/property/property";
+import type { TransactionType } from "@/00-domain/constants/property";
 
 interface StagnantPropertyDto {
   id: string;

@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property";
 import type { AdminProperty } from "@/00-domain/entities";
 import { getPropertyStatus } from "@/00-domain/use-cases/properties/getPropertyStatus";
 import { DPE_COLORS } from "@/shared/constants/dpe";

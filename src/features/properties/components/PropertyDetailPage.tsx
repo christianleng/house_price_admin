@@ -36,8 +36,8 @@ import PropertyFeaturesSection from "../sections/PropertyFeaturesSection";
 import PropertyAmenitiesSection from "../sections/PropertyAmenitiesSection";
 import PropertyDpeSection from "../sections/PropertyDpeSection";
 import PropertyPhotosSection from "../sections/PropertyPhotosSection";
-import PropertyStatusBadge from "../sections/PropertyStatusBadge";
-import PropertyDetailActions from "../sections/PropertyDetailActions";
+import PropertyStatusBadge from "./PropertyStatusBadge";
+import PropertyDetailActions from "./PropertyDetailActions";
 import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
 
 export default function PropertyDetailPage() {

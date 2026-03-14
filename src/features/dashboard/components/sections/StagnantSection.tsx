@@ -6,7 +6,7 @@ import { DPE_COLORS } from "@/shared/constants/dpe";
 import { formatPrice } from "@/shared/utils/format";
 import { useGlobalStats } from "@/02-infrastructure/react-query/adminHooks";
 import { IconExternalLink } from "@tabler/icons-react";
-import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property";
 
 export function StagnantSection() {
   const { data: stats } = useGlobalStats();
