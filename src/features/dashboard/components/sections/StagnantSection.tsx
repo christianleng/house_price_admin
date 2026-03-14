@@ -1,14 +1,12 @@
 import { Link } from "react-router";
+import { getStagnantSeverity } from "@/00-domain/use-cases/properties/getStagnantSeverity";
+import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
+import { STAGNANT_STYLES } from "@/shared/utils/stagnant";
 import { DPE_COLORS } from "@/shared/constants/dpe";
 import { formatPrice } from "@/shared/utils/format";
 import { useGlobalStats } from "@/02-infrastructure/react-query/adminHooks";
-import { TRANSACTION_TYPES } from "@/shared/constants/property";
 import { IconExternalLink } from "@tabler/icons-react";
-
-const STAGNANT_STYLES = {
-  urgent: "bg-alert-urgent-bg border-alert-urgent-border text-status-error",
-  default: "bg-muted border-border text-status-urgent",
-} as const;
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
 
 export function StagnantSection() {
   const { data: stats } = useGlobalStats();
@@ -52,10 +50,12 @@ export function StagnantSection() {
 
       <div className="flex flex-col gap-2">
         {items.map((property) => {
-          const s =
-            property.daysStagnant > 100
-              ? STAGNANT_STYLES.urgent
-              : STAGNANT_STYLES.default;
+          const severity = getStagnantSeverity(property.daysStagnant);
+          const s = STAGNANT_STYLES[severity];
+          const price =
+            property.transactionType === TRANSACTION_TYPES.SALE
+              ? formatPrice(property.price)
+              : `${property.rentPriceMonthly} €/m`;
 
           return (
             <Link
@@ -68,13 +68,9 @@ export function StagnantSection() {
                   {property.title}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {property.transactionType === TRANSACTION_TYPES.SALE
-                    ? "Vente"
-                    : "Location"}
+                  {getTransactionTypeLabel(property.transactionType)}
                   {" · "}
-                  {property.transactionType === TRANSACTION_TYPES.SALE
-                    ? formatPrice(property.price)
-                    : `${property.rentPriceMonthly} €/m`}
+                  {price}
                 </p>
               </div>
 

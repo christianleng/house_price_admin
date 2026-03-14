@@ -10,9 +10,10 @@ import type {
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
+import type { IAdminService } from "@/00-domain/ports";
 import { API_ENDPOINTS } from "./EndPoints";
 import { apiClient } from "./ApiClient";
-import type { TransactionType } from "@/shared/constants/property";
+import type { TransactionType } from "@/00-domain/constants/property/property";
 
 interface StagnantPropertyDto {
   id: string;
@@ -314,7 +315,7 @@ function mapPropertyDetail(dto: PropertyDetailDto): PropertyDetail {
     photos: dto.photos.map((p) => ({
       id: p.id,
       url: p.url,
-      is_primary: p.is_primary,
+      isPrimary: p.is_primary,
       order: p.order,
     })),
     thumbnailUrl: dto.thumbnail_url,
@@ -364,7 +365,7 @@ function toSnakeCase(payload: UpdatePropertyPayload): Record<string, unknown> {
   };
 }
 
-export const adminService = {
+export const adminService: IAdminService = {
   async getGlobalStats(): Promise<PropertyGlobalStats> {
     const dto = await apiClient.get<GlobalStatsDto>(API_ENDPOINTS.ADMIN.STATS);
     return mapGlobalStats(dto);

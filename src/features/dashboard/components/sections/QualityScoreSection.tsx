@@ -1,4 +1,9 @@
 import { useGlobalStats } from "@/02-infrastructure/react-query/adminHooks";
+import { getQualityScoreLevel } from "@/00-domain/use-cases/stats/getQualityScoreLevel";
+import {
+  QUALITY_SCORE_STYLES,
+  QUALITY_SCORE_GLOBAL_STYLES,
+} from "@/shared/utils/qualityScore";
 import type { QualityScore } from "@/00-domain/entities";
 
 const CRITERIA: {
@@ -12,22 +17,6 @@ const CRITERIA: {
   { key: "energyRating", label: "DPE renseigné", icon: "⚡" },
   { key: "surface", label: "Surface m²", icon: "📐" },
 ] as const;
-
-function getScoreClasses(score: number): { bar: string; text: string } {
-  if (score >= 90)
-    return { bar: "bg-status-success", text: "text-status-success" };
-  if (score >= 70)
-    return { bar: "bg-status-warning", text: "text-status-warning" };
-  return { bar: "bg-status-error", text: "text-status-error" };
-}
-
-function getGlobalScoreClasses(score: number): string {
-  if (score >= 90)
-    return "text-status-success bg-alert-success-bg border-alert-success-border";
-  if (score >= 70)
-    return "text-status-warning bg-alert-warn-bg border-alert-warn-border";
-  return "text-status-error bg-alert-urgent-bg border-alert-urgent-border";
-}
 
 export function QualityScoreSection() {
   const { data: stats } = useGlobalStats();
@@ -45,7 +34,9 @@ export function QualityScoreSection() {
       <div className="space-y-3 mb-4">
         {CRITERIA.map(({ key, label, icon }) => {
           const score = qs[key];
-          const { bar, text } = getScoreClasses(score);
+          const level = getQualityScoreLevel(score);
+          const { bar, text } = QUALITY_SCORE_STYLES[level];
+
           return (
             <div key={key} className="flex items-center gap-3">
               <span className="text-base w-5 shrink-0">{icon}</span>
@@ -69,7 +60,9 @@ export function QualityScoreSection() {
       </div>
 
       <div
-        className={`flex items-center justify-between rounded-sm border px-4 py-3 ${getGlobalScoreClasses(qs.globalScore)}`}
+        className={`flex items-center justify-between rounded-sm border px-4 py-3 ${
+          QUALITY_SCORE_GLOBAL_STYLES[getQualityScoreLevel(qs.globalScore)]
+        }`}
       >
         <span className="text-xs font-semibold">Score global</span>
         <span className="text-xl font-bold tabular-nums">

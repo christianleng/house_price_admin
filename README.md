@@ -2,7 +2,9 @@
 
 Interface d'administration de la plateforme House Price.
 
-> Ce module admin est volontairement découplé du frontend principal. Il s'agit d'une opportunité d'approfondir des patterns d'ingénierie complémentaires — en particulier l'**Architecture Hexagonale**, une culture **Design System** poussée via Storybook, et une séparation stricte entre **server state** (React Query) et **client state** (MobX).
+> Ce module admin est volontairement découplé du frontend principal. Il s'agit d'une opportunité d'approfondir des patterns d'ingénierie complémentaires — en particulier l'**Architecture Hexagonale**, une culture **Design System** poussée via Storybook, une séparation stricte entre **server state** (React Query) et **client state** (React Context), et une stratégie **offline-first** reposant sur un Service Worker, un cache IndexedDB pour les mutations en attente, et une synchronisation automatique au retour en ligne.
+
+📋 **[Processus de release → RELEASE.md](./RELEASE.md)**
 
 ---
 
@@ -61,10 +63,10 @@ Le numéro `01` signifie qu'il dépend de `00-domain` et de rien d'autre. Un ada
 ```
 01-adapters/
 └── http/
-    ├── ApiClient.ts          ← Client HTTP générique avec injection du token
-    ├── ApiError.ts           ← Erreurs HTTP typées
-    ├── endpoints.ts          ← Centralisation des URLs
-    ├── HttpAuthAdapter.ts    ← Implémente IAuthService + mapping DTO → entité
+    ├── ApiClient.ts           ← Client HTTP générique avec injection du token
+    ├── ApiError.ts            ← Erreurs HTTP typées
+    ├── endpoints.ts           ← Centralisation des URLs
+    ├── HttpAuthAdapter.ts     ← Implémente IAuthService + mapping DTO → entité
     └── TokenStorageAdapter.ts ← Implémente ITokenStorage via js-cookie
 ```
 
@@ -83,15 +85,14 @@ Le numéro `02` signifie qu'il dépend de `00-domain` et de `01-adapters`. C'est
 ```
 02-infrastructure/
 ├── auth/          ← AuthProvider : React Context qui orchestre l'état de session
+├── offline/       ← Mutation queue IndexedDB, sync on reconnect, PWA providers
 ├── react-query/   ← Hooks React Query par domaine fonctionnel + config QueryClient
 └── router/        ← createBrowserRouter, guards, loaders
 ```
 
-**Pourquoi `auth/` et non `mobx/` ?** Le projet utilise actuellement React Context + React Query pour gérer la session. Nommer le dossier `mobx/` alors qu'il n'y a pas encore de MobX était trompeur. Le dossier porte le nom de la responsabilité (`auth`), pas de la technologie.
+**Pourquoi `offline/` dans `infrastructure/` ?** La persistence IndexedDB, le Service Worker et la synchronisation au retour en ligne sont des préoccupations d'infrastructure — pas du domaine, pas d'une feature. `offline/` contient `mutationQueue.ts`, `useSyncOnline.ts`, `SyncOnlineProvider.tsx`, `OfflineBanner.tsx` et `PendingMutationsBadge.tsx`.
 
-**Pourquoi `react-query/` dans `infrastructure/` et non dans `features/` ?** Les hooks React Query (`useCurrentUser`, `useLoginMutation`) ne sont pas des composants — ils n'ont pas d'opinion sur l'UI. Ils vivent dans l'infrastructure et sont consommés par les features. Si demain on remplace React Query par SWR, on ne touche qu'à ce dossier.
-
-**Pourquoi un `router/` dans l'infrastructure ?** Le router dépend de React Router, connaît toutes les features, et orchestre les guards d'auth. C'est de la configuration de framework — pas de la logique feature, pas du domaine. L'infrastructure est le seul endroit cohérent.
+**Pourquoi `react-query/` dans `infrastructure/` et non dans `features/` ?** Les hooks React Query ne sont pas des composants — ils n'ont pas d'opinion sur l'UI. Ils vivent dans l'infrastructure et sont consommés par les features. Si demain on remplace React Query par SWR, on ne touche qu'à ce dossier.
 
 ---
 
@@ -106,10 +107,6 @@ app/
 └── providers/   ← Composition des providers React (QueryProvider, AppProviders)
 ```
 
-**Pourquoi `layouts/` dans `app/` et non dans `features/` ?** `AppSidebar`, `SiteHeader`, `NavMain` sont des composants du shell applicatif — ils font partie du layout global, pas d'une feature métier. Ils ne seraient pas réutilisables dans un autre projet. `features/` accueille ce qui est fonctionnel et potentiellement partageable entre projets. Le shell appartient à _cette app_.
-
-**Pourquoi `QueryProvider` et `AppProviders` coexistent-ils ?** `QueryProvider` encapsule tout ce qui concerne React Query — le client et les DevTools. `AppProviders` compose tous les providers de l'app. La séparation permet de modifier la config React Query sans toucher à l'orchestration générale des providers.
-
 ---
 
 ### `features/`
@@ -122,10 +119,8 @@ Chaque feature est un module autonome. Elle contient ses composants, ses hooks l
 features/
 ├── auth/           ← Login, protection des routes, session UI
 ├── dashboard/      ← Page d'accueil admin avec métriques
-└── properties/     ← CRUD propriétés, filtres, pagination
+└── properties/     ← CRUD propriétés, filtres, pagination, détail inline
 ```
-
-**Pourquoi la feature `auth/` contient `ProtectedLayout` ?** Parce que protéger une route est une responsabilité de l'authentification. `ProtectedLayout` vérifie si l'utilisateur est connecté — c'est de la logique auth, pas de la logique layout.
 
 ---
 
@@ -137,13 +132,11 @@ La règle pour décider si quelque chose va dans `shared/` : peut-on l'utiliser 
 
 ```
 shared/
-├── hooks/    ← Hooks utilitaires (use-mobile, use-debounce...)
+├── hooks/    ← Hooks utilitaires (useOnlineStatus, usePendingMutationsCount...)
 ├── pages/    ← Pages sans feature (NotFoundPage, RootErrorBoundary)
 ├── ui/       ← Primitives shadcn/ui uniquement
 └── utils/    ← cn(), formatters, helpers purs
 ```
-
-**Pourquoi `NotFoundPage` et `RootErrorBoundary` sont dans `shared/pages/` et non dans `shared/ui/` ?** `shared/ui/` contient des primitives UI réutilisables — des briques de construction. `NotFoundPage` et `RootErrorBoundary` sont des pages complètes. Mélanger des pages avec des boutons dans le même dossier casse la clarté du dossier `ui/`.
 
 ---
 
@@ -158,12 +151,12 @@ Chaque composant de `shared/ui/` est documenté et testé dans Storybook avant i
 ## 🔄 Règle de dépendances
 
 ```
-00-domain        ← ne dépend de RIEN
-01-adapters      ← dépend de 00-domain seulement
+00-domain         ← ne dépend de RIEN
+01-adapters       ← dépend de 00-domain seulement
 02-infrastructure ← dépend de 00-domain + 01-adapters + frameworks
-features/        ← dépend de 02-infrastructure + types de 00-domain
-app/             ← dépend de tout (point d'entrée)
-shared/          ← ne dépend d'aucune feature
+features/         ← dépend de 02-infrastructure + types de 00-domain
+app/              ← dépend de tout (point d'entrée)
+shared/           ← ne dépend d'aucune feature
 ```
 
 **Une flèche dans l'autre sens = bug d'architecture.** Si `00-domain` importe depuis `01-adapters`, si `shared/` importe depuis `features/`, ou si `01-adapters` importe depuis `02-infrastructure` — c'est une violation à corriger immédiatement.
@@ -173,11 +166,23 @@ shared/          ← ne dépend d'aucune feature
 ## 🔀 Server State vs Client State
 
 ```
-React Query  → données serveur   (propriétés, users, stats)
-MobX/Context → état client       (session, sidebar, toasts, thème)
+React Query     → données serveur   (propriétés, users, stats)
+React Context   → état client       (session, auth)
 ```
 
-La règle : si la donnée vient du serveur et peut devenir stale, c'est React Query. Si c'est un état UI qui ne nécessite pas de réseau pour être vrai, c'est MobX ou Context.
+La règle : si la donnée vient du serveur et peut devenir stale, c'est React Query. Si c'est un état UI qui ne nécessite pas de réseau pour être vrai, c'est React Context.
+
+---
+
+## 📡 Stratégie Offline-First
+
+L'app est conçue pour fonctionner sans réseau grâce à trois couches complémentaires :
+
+**Service Worker** (`vite-plugin-pwa` + Workbox) — precache de tous les assets au premier chargement en ligne. `navigateFallback` sur `index.html` pour la SPA. Stratégie `NetworkFirst` sur les appels API avec fallback cache de 24h.
+
+**Mutation Queue** (`idb-keyval`) — toute modification effectuée hors ligne est sérialisée dans IndexedDB plutôt que perdue. Au retour en ligne, les mutations sont rejouées dans l'ordre via `useSyncOnline`. Les erreurs 4xx (payload invalide) sont discardées pour ne pas bloquer la queue. Les erreurs réseau sont conservées pour le prochain retry.
+
+**TanStack Query** — `networkMode: "offlineFirst"` sur toutes les queries pour utiliser le cache existant sans lever d'erreur. `gcTime` de 24h pour conserver les données entre les navigations. Optimistic updates sur `useUpdateProperty` pour une UI réactive même sans réseau.
 
 ---
 

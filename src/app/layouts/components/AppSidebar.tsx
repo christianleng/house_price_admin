@@ -16,14 +16,11 @@ import { NavSecondary } from "./nav/NavSecondary";
 import { NavUser } from "./nav/NavUser";
 import { Link } from "react-router";
 import { NAV_MAIN, NAV_SECONDARY } from "@/shared/constants/sidebar";
-
-const USER = {
-  name: "shadcn",
-  email: "m@example.com",
-  avatar: "/avatars/shadcn.jpg",
-} as const;
+import { useAuth } from "@/02-infrastructure/auth/AuthProvider";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader className="bg-muted">
@@ -46,7 +43,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={NAV_SECONDARY} />
       </SidebarContent>
       <SidebarFooter className="bg-muted">
-        <NavUser user={USER} />
+        <NavUser
+          user={{
+            name: user?.name ?? "—",
+            email: user?.email ?? "—",
+            avatar: "/avatars/default.jpg",
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );

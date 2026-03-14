@@ -10,6 +10,8 @@ export function usePendingMutationsCount(): number {
       setCount(pending.length);
     }
 
+    refresh();
+
     window.addEventListener("mutation-queue-changed", refresh);
 
     return () => {

@@ -4,7 +4,6 @@ import { IconBuilding, IconExternalLink } from "@tabler/icons-react";
 import { Badge } from "@/shared/ui/badge";
 import { formatPrice } from "@/shared/utils/format";
 import { useRecentProperties } from "@/02-infrastructure/react-query/propertyHooks";
-import { TRANSACTION_TYPES } from "@/shared/constants/property";
 import {
   Table,
   TableBody,
@@ -20,6 +19,8 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import type { RecentProperty } from "@/00-domain/entities";
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
+import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
 
 const STATUS_CLASSES = {
   active:
@@ -36,9 +37,9 @@ const columns: ColumnDef<RecentProperty>[] = [
       const property = row.original;
       return (
         <div className="flex items-center gap-3">
-          {property.thumbnail_url ? (
+          {property.thumbnailUrl ? (
             <img
-              src={property.thumbnail_url}
+              src={property.thumbnailUrl}
               alt={property.title}
               className="size-10 rounded-sm object-cover shrink-0"
             />
@@ -72,9 +73,7 @@ const columns: ColumnDef<RecentProperty>[] = [
     header: "Type",
     cell: ({ row }) => (
       <Badge variant="secondary" className="text-xs capitalize">
-        {row.original.transaction_type === TRANSACTION_TYPES.SALE
-          ? "Vente"
-          : "Location"}
+        {getTransactionTypeLabel(row.original.transactionType)}
       </Badge>
     ),
   },
@@ -84,9 +83,9 @@ const columns: ColumnDef<RecentProperty>[] = [
     cell: ({ row }) => {
       const property = row.original;
       const label =
-        property.transaction_type === TRANSACTION_TYPES.SALE
+        property.transactionType === TRANSACTION_TYPES.SALE
           ? formatPrice(property.price)
-          : `${property.rent_price_monthly} €/mois`;
+          : `${property.rentPriceMonthly} €/mois`;
       return (
         <span className="flex justify-end font-medium tabular-nums">
           {label}
@@ -98,7 +97,7 @@ const columns: ColumnDef<RecentProperty>[] = [
     id: "statut",
     header: () => <span className="flex justify-center">Statut</span>,
     cell: ({ row }) => {
-      const isActive = row.original.is_active;
+      const isActive = row.original.isActive;
       return (
         <span className="flex justify-center">
           <span
