@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router";
-import { IconBuilding, IconSearch, IconX } from "@tabler/icons-react";
+import { IconSearch, IconX } from "@tabler/icons-react";
 import { Input } from "@/shared/ui/input";
 import {
   Select,
@@ -20,123 +20,18 @@ import {
 import { useAdminProperties } from "@/02-infrastructure/react-query/adminHooks";
 import { filtersFromParams } from "@/shared/utils/propertyFilters";
 import Pagination from "@/shared/ui/Pagination";
-import { DPE_COLORS, ENERGY_RATINGS } from "@/shared/constants/dpe";
 import { PropertyRow } from "./PropertyRow";
-import type { AdminProperty } from "@/00-domain/entities";
-import { Badge } from "@/shared/ui/badge";
-import { TRANSACTION_TYPES } from "@/shared/constants/property";
-import { formatPrice } from "@/shared/utils/format";
+import { ENERGY_RATINGS } from "@/00-domain/constants/property/property";
 
-interface ColumnDef {
-  id: string;
-  header: string;
-  className?: string;
-  cell: (property: AdminProperty) => React.ReactNode;
-}
-
-const columns: ColumnDef[] = [
-  {
-    id: "bien",
-    header: "Bien",
-    cell: (property) => (
-      <div className="flex items-center gap-3">
-        {property.thumbnailUrl ? (
-          <img
-            src={property.thumbnailUrl}
-            alt={property.title}
-            className="size-10 rounded-sm object-cover shrink-0"
-          />
-        ) : (
-          <div className="size-10 rounded-sm bg-muted flex items-center justify-center shrink-0">
-            <IconBuilding className="size-4 text-muted-foreground" />
-          </div>
-        )}
-        <div className="min-w-0">
-          <p className="font-medium text-foreground truncate max-w-52">
-            {property.title}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {property.reference ?? "—"}
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "ville",
-    header: "Ville",
-    cell: (property) => (
-      <span className="text-muted-foreground">{property.city}</span>
-    ),
-  },
-  {
-    id: "type",
-    header: "Type",
-    cell: (property) => (
-      <Badge variant="secondary" className="text-xs capitalize">
-        {property.transactionType === TRANSACTION_TYPES.SALE
-          ? "Vente"
-          : "Location"}
-      </Badge>
-    ),
-  },
-  {
-    id: "prix",
-    header: "Prix",
-    className: "text-right",
-    cell: (property) => {
-      const label =
-        property.transactionType === TRANSACTION_TYPES.SALE
-          ? property.price != null
-            ? formatPrice(property.price)
-            : "—"
-          : property.rentPriceMonthly != null
-            ? `${property.rentPriceMonthly.toLocaleString("fr-FR")} €/mois`
-            : "—";
-      return (
-        <span className="flex justify-end font-medium tabular-nums">
-          {label}
-        </span>
-      );
-    },
-  },
-  {
-    id: "dpe",
-    header: "DPE",
-    cell: (property) => (
-      <span
-        className={`inline-flex items-center rounded-sm px-1.5 py-0.5 text-xs font-bold ${
-          DPE_COLORS[property.energyRating as keyof typeof DPE_COLORS] ??
-          "bg-muted text-muted-foreground"
-        }`}
-      >
-        {property.energyRating}
-      </span>
-    ),
-  },
-  {
-    id: "surface",
-    header: "Surface",
-    cell: (property) => (
-      <span className="text-muted-foreground tabular-nums">
-        {property.surfaceArea} m²
-      </span>
-    ),
-  },
-  {
-    id: "statut",
-    header: "Statut",
-    cell: (property) => (
-      <span
-        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-          property.isActive ? "Actif" : "Inactif"
-        }`}
-      >
-        {property.isActive ? "Actif" : "Inactif"}
-      </span>
-    ),
-  },
-];
+const COLUMNS = [
+  { id: "bien", header: "Bien" },
+  { id: "ville", header: "Ville" },
+  { id: "type", header: "Type" },
+  { id: "prix", header: "Prix" },
+  { id: "dpe", header: "DPE" },
+  { id: "surface", header: "Surface" },
+  { id: "statut", header: "Statut" },
+] as const;
 
 export default function PropertyListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -311,7 +206,7 @@ export default function PropertyListPage() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40">
-              {columns.map((col) => (
+              {COLUMNS.map((col) => (
                 <TableHead key={col.id}>{col.header}</TableHead>
               ))}
             </TableRow>

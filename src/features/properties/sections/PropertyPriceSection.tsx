@@ -1,5 +1,5 @@
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
 import type { UpdatePropertyPayload } from "@/00-domain/entities";
-import { TRANSACTION_TYPES } from "@/shared/constants/property";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";

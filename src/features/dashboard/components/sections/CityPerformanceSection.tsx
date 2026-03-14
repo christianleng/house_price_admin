@@ -1,4 +1,4 @@
-import { getSaleDelayColor } from "@/00-domain/use-cases/stats/categorizeSaleDelay";
+import { getSaleDelayLevel } from "@/00-domain/use-cases/stats/categorizeSaleDelay";
 import { useCitiesPerformance } from "@/02-infrastructure/react-query/adminHooks";
 import {
   Table,
@@ -8,13 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table";
+import { SALE_DELAY_CLASSES } from "@/shared/utils/saleDelay";
 
 const HEADERS = ["Ville", "Biens", "€/m²", "Délai vente"] as const;
 
 function DelayBadge({ days }: { days: number | null }) {
   if (days == null) return <span className="text-muted-foreground">—</span>;
+  const level = getSaleDelayLevel(days);
   return (
-    <span className={`font-bold tabular-nums ${getSaleDelayColor(days)}`}>
+    <span className={`font-bold tabular-nums ${SALE_DELAY_CLASSES[level]}`}>
       {Math.round(days)}j
     </span>
   );
