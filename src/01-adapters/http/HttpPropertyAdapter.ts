@@ -2,7 +2,7 @@ import type { PaginatedResult, RecentProperty } from "@/00-domain/entities";
 import type { IPropertyService } from "@/00-domain/ports";
 import { apiClient } from "./ApiClient";
 import { API_ENDPOINTS } from "./EndPoints";
-import type { TransactionType } from "@/00-domain/constants/property/property";
+import type { TransactionType } from "@/00-domain/constants/property";
 
 interface RecentPropertyDto {
   id: string;

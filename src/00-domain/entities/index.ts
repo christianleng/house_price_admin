@@ -1,4 +1,4 @@
-import type { TransactionType } from "../constants/property/property";
+import type { TransactionType } from "../constants/property";
 
 export interface User {
   id: string;
