@@ -1,9 +1,20 @@
-import type { AuthTokenDto } from "@/01-adapters/http/HttpAuthAdapter";
-import type { LoginCredentials, RecentProperty, User } from "../entities";
+import type {
+  LoginCredentials,
+  RecentProperty,
+  User,
+  PropertyGlobalStats,
+  PropertyMonthlyStats,
+  CitiesPerformanceStats,
+  AdminPropertiesFilters,
+  AdminPropertiesResponse,
+  PropertyDetail,
+  UpdatePropertyPayload,
+  PaginatedResult,
+} from "../entities";
 
 export interface IAuthService {
   isAuthenticated(): boolean;
-  login(credentials: LoginCredentials): Promise<AuthTokenDto>;
+  login(credentials: LoginCredentials): Promise<void>;
   getMe(): Promise<User>;
   logout(): Promise<void>;
 }
@@ -17,5 +28,20 @@ export interface ITokenStorage {
 
 export interface IPropertyService {
   getCount(params?: { status?: string }): Promise<number>;
-  getRecent(limit: number): Promise<{ items: RecentProperty[]; total: number }>;
+  getRecent(limit: number): Promise<PaginatedResult<RecentProperty>>;
+}
+
+export interface IAdminService {
+  getGlobalStats(): Promise<PropertyGlobalStats>;
+  getMonthlyStats(months?: number): Promise<PropertyMonthlyStats>;
+  getCitiesPerformance(): Promise<CitiesPerformanceStats>;
+  getAdminProperties(
+    filters: AdminPropertiesFilters,
+  ): Promise<AdminPropertiesResponse>;
+  getPropertyById(id: string): Promise<PropertyDetail>;
+  updateProperty(
+    id: string,
+    payload: UpdatePropertyPayload,
+  ): Promise<PropertyDetail>;
+  deleteProperty(id: string): Promise<void>;
 }

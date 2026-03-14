@@ -18,7 +18,7 @@ const PropertyPhotosSection = ({ photos }: PropertyPhotosSectionProps) => {
               alt=""
               className="w-24 h-16 object-cover rounded-lg border border-border"
             />
-            {photo.is_primary && (
+            {photo.isPrimary && (
               <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-full font-medium">
                 Principal
               </span>

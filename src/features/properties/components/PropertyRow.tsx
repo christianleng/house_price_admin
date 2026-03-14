@@ -1,11 +1,13 @@
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
 import type { AdminProperty } from "@/00-domain/entities";
 import { getPropertyStatus } from "@/00-domain/use-cases/properties/getPropertyStatus";
 import { DPE_COLORS } from "@/shared/constants/dpe";
-import { TRANSACTION_TYPES } from "@/shared/constants/property";
 import { Badge } from "@/shared/ui/badge";
 import { TableCell, TableRow } from "@/shared/ui/table";
 import { formatPrice } from "@/shared/utils/format";
+import { PROPERTY_STATUS_STYLES } from "@/shared/utils/propertyStatus";
 import { IconBuilding } from "@tabler/icons-react";
+import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
 
 interface PropertyRowProps {
   property: AdminProperty;
@@ -22,7 +24,8 @@ export function PropertyRow({ property, onClick }: PropertyRowProps) {
         ? `${property.rentPriceMonthly.toLocaleString("fr-FR")} €/mois`
         : "—";
 
-  const { className, label } = getPropertyStatus(property.isActive);
+  const status = getPropertyStatus(property.isActive);
+  const { className, label } = PROPERTY_STATUS_STYLES[status];
 
   return (
     <TableRow
@@ -55,9 +58,7 @@ export function PropertyRow({ property, onClick }: PropertyRowProps) {
       <TableCell className="text-muted-foreground">{property.city}</TableCell>
       <TableCell>
         <Badge variant="secondary" className="text-xs capitalize">
-          {property.transactionType === TRANSACTION_TYPES.SALE
-            ? "Vente"
-            : "Location"}
+          {getTransactionTypeLabel(property.transactionType)}
         </Badge>
       </TableCell>
       <TableCell className="text-right font-medium tabular-nums">

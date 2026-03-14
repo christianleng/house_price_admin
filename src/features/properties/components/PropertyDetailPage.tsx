@@ -26,7 +26,6 @@ import {
   useDeleteProperty,
 } from "@/02-infrastructure/react-query/adminHooks";
 import { DPE_COLORS } from "@/shared/constants/dpe";
-import { TRANSACTION_TYPES } from "@/shared/constants/property";
 import type { UpdatePropertyPayload } from "@/00-domain/entities";
 import { StickyActionBar } from "@/shared/ui/StickyActionBar";
 import PropertyStatusSection from "../sections/PropertyStatusSection";
@@ -39,6 +38,7 @@ import PropertyDpeSection from "../sections/PropertyDpeSection";
 import PropertyPhotosSection from "../sections/PropertyPhotosSection";
 import PropertyStatusBadge from "../sections/PropertyStatusBadge";
 import PropertyDetailActions from "../sections/PropertyDetailActions";
+import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
 
 export default function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -223,9 +223,7 @@ export default function PropertyDetailPage() {
             </div>
             <div className="flex flex-wrap gap-2">
               <Badge className="bg-primary-foreground/15 text-primary-foreground border-primary-foreground/20 text-xs">
-                {property.transactionType === TRANSACTION_TYPES.SALE
-                  ? "Vente"
-                  : "Location"}
+                {getTransactionTypeLabel(property.transactionType)}
               </Badge>
               <Badge className="bg-primary-foreground/15 text-primary-foreground border-primary-foreground/20 text-xs">
                 {property.propertyType}

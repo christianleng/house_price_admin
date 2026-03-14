@@ -9,31 +9,12 @@ export interface AuthTokenDto {
   token_type: string;
 }
 
-function mapUser(dto: ApiUserDto): User {
-  return {
-    id: dto.id,
-    email: dto.email,
-    first_name: dto.first_name,
-    last_name: dto.last_name,
-    phone: dto.phone,
-    is_active: dto.is_active,
-    is_superuser: dto.is_superuser,
-    is_verified: dto.is_verified,
-    agency_name: dto.agency_name,
-    city: dto.city,
-    rsac_number: dto.rsac_number,
-    created_at: dto.created_at,
-  };
-}
-
 interface ApiUserDto {
   id: string;
   email: string;
   is_active: boolean;
-  is_superuser: boolean;
   is_verified: boolean;
-  first_name: string;
-  last_name: string;
+  name: string;
   phone: string;
   agency_name?: string;
   city?: string;
@@ -41,12 +22,27 @@ interface ApiUserDto {
   created_at: string;
 }
 
+function mapUser(dto: ApiUserDto): User {
+  return {
+    id: dto.id,
+    email: dto.email,
+    isActive: dto.is_active,
+    isVerified: dto.is_verified,
+    name: dto.name,
+    phone: dto.phone,
+    agencyName: dto.agency_name,
+    city: dto.city,
+    rsacNumber: dto.rsac_number,
+    createdAt: dto.created_at,
+  };
+}
+
 export const authService: IAuthService = {
   isAuthenticated: (): boolean => {
     return !!tokenStorage.getToken();
   },
 
-  async login(credentials: LoginCredentials): Promise<AuthTokenDto> {
+  async login(credentials: LoginCredentials): Promise<void> {
     const response = await apiClient.postForm<AuthTokenDto>(
       API_ENDPOINTS.AUTH.LOGIN,
       {
@@ -58,12 +54,10 @@ export const authService: IAuthService = {
     if (response.access_token) {
       tokenStorage.setToken(response.access_token);
     }
-
-    return response;
   },
 
   async getMe(): Promise<User> {
-    const dto = await apiClient.get<User>(API_ENDPOINTS.AUTH.ME);
+    const dto = await apiClient.get<ApiUserDto>(API_ENDPOINTS.AUTH.ME);
     return mapUser(dto);
   },
 

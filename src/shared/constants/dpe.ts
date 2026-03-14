@@ -7,5 +7,3 @@ export const DPE_COLORS: Record<string, string> = {
   F: "bg-status-error-dark text-white",
   G: "bg-[#991b1b] text-white",
 } as const;
-
-export const ENERGY_RATINGS = ["A", "B", "C", "D", "E", "F", "G"] as const;

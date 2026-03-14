@@ -1,25 +1,26 @@
-import type { TransactionType } from "@/shared/constants/property";
+import type { TransactionType } from "../constants/property/property";
 
 export interface User {
   id: string;
   email: string;
-  is_active: boolean;
-  is_superuser: boolean;
-  is_verified: boolean;
-  first_name: string;
-  last_name: string;
-
-  agency_name?: string;
+  isActive: boolean;
+  isVerified: boolean;
+  name: string;
+  agencyName?: string;
   city?: string;
-  created_at: string;
-  name?: string;
+  createdAt: string;
   phone: string;
-  rsac_number?: string;
+  rsacNumber?: string;
 }
 
 export interface LoginCredentials {
   email: string;
   password: string;
+}
+
+export interface PaginatedResult<T> {
+  items: T[];
+  total: number;
 }
 
 export interface MonthlyStatsPeriod {
@@ -39,11 +40,11 @@ export interface RecentProperty {
   reference: string;
   title: string;
   city: string;
-  transaction_type: TransactionType;
+  transactionType: TransactionType;
   price: number | null;
-  rent_price_monthly: number | null;
-  is_active: boolean;
-  thumbnail_url: string | null;
+  rentPriceMonthly: number | null;
+  isActive: boolean;
+  thumbnailUrl: string | null;
 }
 
 export interface StagnantProperty {
@@ -101,8 +102,6 @@ export interface CitiesPerformanceStats {
   cities: CityPerformance[];
 }
 
-// ── Admin Properties ────────────────────────────────────────────────────────
-
 export interface AdminProperty {
   id: string;
   reference: string | null;
@@ -147,7 +146,7 @@ export interface AdminPropertiesFilters {
 export interface PhotoDetail {
   id: string;
   url: string;
-  is_primary: boolean;
+  isPrimary: boolean;
   order: number;
 }
 
@@ -155,10 +154,8 @@ export interface PropertyDetail {
   id: string;
   agentId: string;
   reference: string;
-
   title: string;
   description: string | null;
-
   address: string | null;
   neighborhood: string;
   city: string;
@@ -166,14 +163,12 @@ export interface PropertyDetail {
   postalCode: string;
   latitude: number;
   longitude: number;
-
   price: number | null;
   pricePerSqm: number | null;
   rentPriceMonthly: number | null;
   deposit: number | null;
   chargesIncluded: boolean | null;
   transactionType: TransactionType;
-
   propertyType: string;
   surfaceArea: number;
   rooms: number;
@@ -182,7 +177,6 @@ export interface PropertyDetail {
   toilets: number | null;
   floors: number | null;
   floorNumber: number | null;
-
   hasCave: boolean | null;
   hasElevator: boolean;
   hasBalcony: boolean;
@@ -190,17 +184,13 @@ export interface PropertyDetail {
   hasGarden: boolean;
   hasParking: boolean;
   parkingSpaces: number | null;
-
   energyRating: string | null;
   heatingType: string | null;
-
   constructionYear: number | null;
   availableFrom: string | null;
   isFurnished: boolean | null;
-
   photos: PhotoDetail[];
   thumbnailUrl: string | null;
-
   createdAt: string;
   updatedAt: string | null;
   isActive: boolean;

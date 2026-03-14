@@ -1,5 +1,7 @@
-export function getSaleDelayColor(days: number): string {
-  if (days <= 30) return "text-status-success";
-  if (days <= 60) return "text-status-warning";
-  return "text-status-error";
+export type SaleDelayLevel = "good" | "warning" | "critical";
+
+export function getSaleDelayLevel(days: number): SaleDelayLevel {
+  if (days <= 30) return "good";
+  if (days <= 60) return "warning";
+  return "critical";
 }
