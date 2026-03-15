@@ -145,7 +145,7 @@ export interface AdminPropertiesFilters {
 
 export interface PhotoDetail {
   id: string;
-  url: string;
+  url: string | null;
   isPrimary: boolean;
   order: number;
 }

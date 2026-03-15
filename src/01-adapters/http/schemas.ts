@@ -147,7 +147,7 @@ export const AdminPropertiesDtoSchema = z.object({
 
 export const PhotoDetailDtoSchema = z.object({
   id: z.string(),
-  url: z.string(),
+  url: z.string().nullable(),
   is_primary: z.boolean(),
   order: z.number(),
 });
