@@ -10,7 +10,7 @@ import type {
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
-import type { IAdminService } from "@/00-domain/ports";
+import type { IAdminQueryService, IAdminMutationService } from "@/00-domain/ports";
 import { API_ENDPOINTS } from "./EndPoints";
 import { apiClient } from "./ApiClient";
 import {
@@ -234,7 +234,7 @@ function toSnakeCase(payload: UpdatePropertyPayload): Record<string, unknown> {
   };
 }
 
-export const adminService: IAdminService = {
+export const adminQueryService: IAdminQueryService = {
   async getGlobalStats(): Promise<PropertyGlobalStats> {
     const raw = await apiClient.get<unknown>(API_ENDPOINTS.ADMIN.STATS);
     const dto = GlobalStatsDtoSchema.parse(raw);
@@ -283,7 +283,9 @@ export const adminService: IAdminService = {
     const dto = PropertyDetailDtoSchema.parse(raw);
     return mapPropertyDetail(dto);
   },
+};
 
+export const adminMutationService: IAdminMutationService = {
   async updateProperty(
     id: string,
     payload: UpdatePropertyPayload,
