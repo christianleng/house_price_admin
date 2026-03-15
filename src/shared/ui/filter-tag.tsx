@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RiCloseLine } from "@remixicon/react";
+import { IconX } from "@tabler/icons-react";
 import { Chip } from "@/shared/ui/chip";
 import { cn } from "../utils";
 
@@ -41,7 +41,7 @@ export function FilterTag({
           }}
           className="ml-1 rounded-full p-0.5 opacity-70 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <RiCloseLine className="size-3.5" />
+          <IconX className="size-3.5" />
           <span className="sr-only">Remove</span>
         </button>
       )}

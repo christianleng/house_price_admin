@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
 import {
-  RiTimeLine,
-  RiBarChartGroupedLine,
-  RiFileList3Line,
-  RiLayoutGridLine,
-  RiArrowLeftRightLine,
-} from "@remixicon/react";
+  IconClock,
+  IconChartBar,
+  IconListDetails,
+  IconLayoutGrid,
+  IconArrowsLeftRight,
+} from "@tabler/icons-react";
 
 const meta = {
   title: "Atoms/Tabs",
@@ -41,23 +41,23 @@ export const NavVariant: Story = {
     <Tabs defaultValue="time">
       <TabsList variant="nav">
         <TabsTrigger value="time">
-          <RiTimeLine className="size-4" />
+          <IconClock className="size-4" />
           Time Ladder
         </TabsTrigger>
         <TabsTrigger value="floor">
-          <RiBarChartGroupedLine className="size-4" />
+          <IconChartBar className="size-4" />
           Floor Ladder
         </TabsTrigger>
         <TabsTrigger value="volume">
-          <RiArrowLeftRightLine className="size-4" />
+          <IconArrowsLeftRight className="size-4" />
           Volume Ladder
         </TabsTrigger>
         <TabsTrigger value="comparison">
-          <RiLayoutGridLine className="size-4" />
+          <IconLayoutGrid className="size-4" />
           Comparison
         </TabsTrigger>
         <TabsTrigger value="cards">
-          <RiFileList3Line className="size-4" />
+          <IconListDetails className="size-4" />
           Block Cards
         </TabsTrigger>
       </TabsList>
