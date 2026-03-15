@@ -4,15 +4,29 @@ import type { UpdatePropertyPayload } from "@/00-domain/entities";
 // ── Store dédié — isolation du reste d'IndexedDB ──────────────────────────────
 const store = createStore("house-price-admin", "mutation-queue");
 
-export interface QueuedMutation {
-  id: string;
-  propertyId: string;
-  payload: UpdatePropertyPayload;
-  queuedAt: number;
-}
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+export type QueuedMutation =
+  | {
+      type: "updateProperty";
+      id: string;
+      propertyId: string;
+      payload: UpdatePropertyPayload;
+      queuedAt: number;
+    }
+  | {
+      type: "deleteProperty";
+      id: string;
+      propertyId: string;
+      queuedAt: number;
+    };
+
+type MutationInput =
+  | { type: "updateProperty"; propertyId: string; payload: UpdatePropertyPayload }
+  | { type: "deleteProperty"; propertyId: string };
 
 function buildKey(mutationId: string): string {
-  return `update-property:${mutationId}`;
+  return `mutation:${mutationId}`;
 }
 
 // ── API publique ──────────────────────────────────────────────────────────────
@@ -21,21 +35,23 @@ function buildKey(mutationId: string): string {
  * Ajoute une mutation en attente dans IndexedDB.
  * Retourne le QueuedMutation créé.
  */
-export async function enqueue(
-  propertyId: string,
-  payload: UpdatePropertyPayload,
-): Promise<QueuedMutation> {
-  const mutation: QueuedMutation = {
+export async function enqueue(input: MutationInput): Promise<QueuedMutation> {
+  const base = {
     id: crypto.randomUUID(),
-    propertyId,
-    payload,
+    propertyId: input.propertyId,
     queuedAt: Date.now(),
   };
+
+  const mutation: QueuedMutation =
+    input.type === "updateProperty"
+      ? { ...base, type: "updateProperty", payload: input.payload }
+      : { ...base, type: "deleteProperty" };
+
   await set(buildKey(mutation.id), mutation, store);
 
-  console.group("🔴 [OfflineQueue] Mutation enqueued");
-  console.log("propertyId:", propertyId);
-  console.log("payload:", payload);
+  console.group(`🔴 [OfflineQueue] Mutation enqueued — ${mutation.type}`);
+  console.log("propertyId:", mutation.propertyId);
+  if (mutation.type === "updateProperty") console.log("payload:", mutation.payload);
   console.log("mutationId:", mutation.id);
   console.log("queuedAt:", new Date(mutation.queuedAt).toISOString());
   console.groupEnd();
@@ -70,6 +86,7 @@ export async function getAll(): Promise<QueuedMutation[]> {
   console.table(
     sorted.map((m) => ({
       id: m.id,
+      type: m.type,
       propertyId: m.propertyId,
       queuedAt: new Date(m.queuedAt).toISOString(),
     })),
