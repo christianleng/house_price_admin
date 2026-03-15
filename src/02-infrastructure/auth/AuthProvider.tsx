@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { LoginCredentials, User } from "@/00-domain/entities";
 import { tokenStorage } from "@/01-adapters/http/TokenStorageAdapter";
 import {
@@ -23,6 +23,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | undefined>(
     tokenStorage.getToken(),
   );
+
+  useEffect(() => {
+    const handleUnauthorized = () => setToken(undefined);
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  }, []);
 
   const {
     data: user,

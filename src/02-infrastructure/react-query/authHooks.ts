@@ -17,7 +17,7 @@ export function useCurrentUser(enabled: boolean) {
       if ((error as { status?: number }).status === 401) return false;
       return failureCount < 2;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     staleTime: 1000 * 60 * 30,
   });
 }

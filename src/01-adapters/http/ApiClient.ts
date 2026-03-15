@@ -151,5 +151,8 @@ import { tokenStorage } from "./TokenStorageAdapter";
 export const apiClient = new APIClient(
   env.API_URL,
   () => tokenStorage.getToken(),
-  () => tokenStorage.clearToken(),
+  () => {
+    tokenStorage.clearToken();
+    window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+  },
 );
