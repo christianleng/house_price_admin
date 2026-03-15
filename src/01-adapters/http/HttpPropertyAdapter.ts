@@ -2,24 +2,8 @@ import type { PaginatedResult, RecentProperty } from "@/00-domain/entities";
 import type { IPropertyService } from "@/00-domain/ports";
 import { apiClient } from "./ApiClient";
 import { API_ENDPOINTS } from "./EndPoints";
-import type { TransactionType } from "@/00-domain/constants/property";
-
-interface RecentPropertyDto {
-  id: string;
-  reference: string;
-  title: string;
-  city: string;
-  transaction_type: TransactionType;
-  price: number | null;
-  rent_price_monthly: number | null;
-  is_active: boolean;
-  thumbnail_url: string | null;
-}
-
-interface RecentPropertiesResponseDto {
-  items: RecentPropertyDto[];
-  total: number;
-}
+import { RecentPropertiesResponseDtoSchema } from "./schemas";
+import type { RecentPropertyDto } from "./schemas";
 
 function mapRecentProperty(dto: RecentPropertyDto): RecentProperty {
   return {
@@ -41,18 +25,17 @@ export const propertyService: IPropertyService = {
   },
 
   async getRecent(limit = 5): Promise<PaginatedResult<RecentProperty>> {
-    const dto = await apiClient.get<RecentPropertiesResponseDto>(
-      API_ENDPOINTS.PROPERTIES.LIST,
-      {
-        params: {
-          sort_by: "created_at",
-          sort_order: "desc",
-          page: 1,
-          page_size: limit,
-          is_active: true,
-        },
+    const raw = await apiClient.get<unknown>(API_ENDPOINTS.PROPERTIES.LIST, {
+      params: {
+        sort_by: "created_at",
+        sort_order: "desc",
+        page: 1,
+        page_size: limit,
+        is_active: true,
       },
-    );
+    });
+
+    const dto = RecentPropertiesResponseDtoSchema.parse(raw);
 
     return {
       items: dto.items.map(mapRecentProperty),
