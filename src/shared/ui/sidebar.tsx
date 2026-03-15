@@ -14,7 +14,7 @@ import {
   SheetTitle,
 } from "./sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
-import { RiSideBarLine } from "@remixicon/react";
+import { IconLayoutSidebar } from "@tabler/icons-react";
 import { cn } from "../utils";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -263,7 +263,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <RiSideBarLine />
+      <IconLayoutSidebar />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
