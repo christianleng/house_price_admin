@@ -3,13 +3,19 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { adminQueryService, adminMutationService } from "@/01-adapters/http/HttpAdminAdapter";
-import { enqueue } from "@/02-infrastructure/offline/mutationQueue";
+import { adminQueryService } from "@/01-adapters/http/HttpAdminAdapter";
+import { offlineAdminMutationService } from "@/02-infrastructure/offline/offlineAdminMutationService";
 import type {
   AdminPropertiesFilters,
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
+
+// Durées de cache par domaine métier
+// Stats globales (agrégats backend, lentes à changer) : 5 min
+const STATS_STALE_TIME = 1000 * 60 * 5;
+// Propriétés (données métier, modifiables par l'admin) : 2 min
+const PROPERTY_STALE_TIME = 1000 * 60 * 2;
 
 export const ADMIN_KEYS = {
   all: () => ["admin"] as const,
@@ -30,31 +36,31 @@ export const ADMIN_KEYS = {
 export const globalStatsQuery = {
   queryKey: ADMIN_KEYS.globalStats(),
   queryFn: () => adminQueryService.getGlobalStats(),
-  staleTime: 1000 * 60 * 5,
+  staleTime: STATS_STALE_TIME,
 };
 
 export const monthlyStatsQuery = (months = 6) => ({
   queryKey: ADMIN_KEYS.monthlyStats(months),
   queryFn: () => adminQueryService.getMonthlyStats(months),
-  staleTime: 1000 * 60 * 5,
+  staleTime: STATS_STALE_TIME,
 });
 
 export const citiesPerformanceQuery = {
   queryKey: ADMIN_KEYS.citiesPerformance(),
   queryFn: () => adminQueryService.getCitiesPerformance(),
-  staleTime: 1000 * 60 * 5,
+  staleTime: STATS_STALE_TIME,
 };
 
 export const adminPropertiesQuery = (filters: AdminPropertiesFilters) => ({
   queryKey: ADMIN_KEYS.propertiesList(filters),
   queryFn: () => adminQueryService.getAdminProperties(filters),
-  staleTime: 1000 * 60 * 2,
+  staleTime: PROPERTY_STALE_TIME,
 });
 
 export const propertyDetailQuery = (id: string) => ({
   queryKey: ADMIN_KEYS.propertyDetail(id),
   queryFn: () => adminQueryService.getPropertyById(id),
-  staleTime: 1000 * 60 * 2,
+  staleTime: PROPERTY_STALE_TIME,
 });
 
 export function useGlobalStats() {
@@ -84,13 +90,9 @@ export function useUpdateProperty(id: string) {
     networkMode: "always",
 
     mutationFn: (payload: UpdatePropertyPayload) =>
-      adminMutationService.updateProperty(id, payload),
+      offlineAdminMutationService.updateProperty(id, payload),
 
     onMutate: async (payload) => {
-      console.log(
-        "🟡 [useUpdateProperty] onMutate — online:",
-        navigator.onLine,
-      );
       await queryClient.cancelQueries({
         queryKey: ADMIN_KEYS.propertyDetail(id),
       });
@@ -107,26 +109,16 @@ export function useUpdateProperty(id: string) {
       return { previousProperty };
     },
 
-    onError: async (error, payload, context) => {
-      console.group("🔴 [useUpdateProperty] onError");
-      console.log("online:", navigator.onLine);
-      console.log("error:", error);
-      console.groupEnd();
-
+    onError: async (_error, _payload, context) => {
       if (context?.previousProperty) {
         queryClient.setQueryData(
           ADMIN_KEYS.propertyDetail(id),
           context.previousProperty,
         );
       }
-
-      if (!navigator.onLine) {
-        await enqueue({ type: "updateProperty", propertyId: id, payload });
-      }
     },
 
     onSuccess: async (updated) => {
-      console.log("✅ [useUpdateProperty] onSuccess — synced with server");
       queryClient.setQueryData(ADMIN_KEYS.propertyDetail(id), updated);
       queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });
     },
@@ -137,12 +129,8 @@ export function useDeleteProperty() {
   const queryClient = useQueryClient();
   return useMutation({
     networkMode: "always",
-    mutationFn: (id: string) => adminMutationService.deleteProperty(id),
-    onError: async (_error, id) => {
-      if (!navigator.onLine) {
-        await enqueue({ type: "deleteProperty", propertyId: id });
-      }
-    },
+    mutationFn: (id: string) =>
+      offlineAdminMutationService.deleteProperty(id),
     onSuccess: (_data, id) => {
       queryClient.removeQueries({ queryKey: ADMIN_KEYS.propertyDetail(id) });
       queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });

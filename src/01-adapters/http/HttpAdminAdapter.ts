@@ -194,44 +194,13 @@ function mapPropertyDetail(dto: PropertyDetailDto): PropertyDetail {
   };
 }
 
-function toSnakeCase(payload: UpdatePropertyPayload): Record<string, unknown> {
-  return {
-    title: payload.title,
-    description: payload.description,
-    address: payload.address,
-    neighborhood: payload.neighborhood,
-    city: payload.city,
-    district: payload.district,
-    postal_code: payload.postalCode,
-    latitude: payload.latitude,
-    longitude: payload.longitude,
-    price: payload.price,
-    rent_price_monthly: payload.rentPriceMonthly,
-    deposit: payload.deposit,
-    charges_included: payload.chargesIncluded,
-    transaction_type: payload.transactionType,
-    property_type: payload.propertyType,
-    surface_area: payload.surfaceArea,
-    rooms: payload.rooms,
-    bedrooms: payload.bedrooms,
-    bathrooms: payload.bathrooms,
-    toilets: payload.toilets,
-    floors: payload.floors,
-    floor_number: payload.floorNumber,
-    has_cave: payload.hasCave,
-    has_elevator: payload.hasElevator,
-    has_balcony: payload.hasBalcony,
-    has_terrace: payload.hasTerrace,
-    has_garden: payload.hasGarden,
-    has_parking: payload.hasParking,
-    parking_spaces: payload.parkingSpaces,
-    energy_rating: payload.energyRating,
-    heating_type: payload.heatingType,
-    construction_year: payload.constructionYear,
-    available_from: payload.availableFrom,
-    is_furnished: payload.isFurnished,
-    is_active: payload.isActive,
-  };
+function toSnakeCase(obj: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`),
+      value,
+    ]),
+  );
 }
 
 export const adminQueryService: IAdminQueryService = {
@@ -292,7 +261,7 @@ export const adminMutationService: IAdminMutationService = {
   ): Promise<PropertyDetail> {
     const raw = await apiClient.patch<unknown>(
       API_ENDPOINTS.ADMIN.PROPERTY_UPDATE(id),
-      toSnakeCase(payload),
+      toSnakeCase(payload as Record<string, unknown>),
     );
     const dto = PropertyDetailDtoSchema.parse(raw);
     return mapPropertyDetail(dto);
