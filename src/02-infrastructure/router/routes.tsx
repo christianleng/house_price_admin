@@ -1,4 +1,5 @@
 import RootErrorBoundary from "@/shared/pages/RootErrorBoundary";
+import AppLoader from "@/shared/pages/AppLoader";
 import RootLayout from "../../app/layouts/RootLayout";
 import { ProtectedLayout } from "@/features/auth/components/ProtectedLayout";
 import { queryClient } from "../react-query/queryClient";
@@ -17,7 +18,7 @@ export const routes = [
   {
     path: "/",
     Component: () => <ProtectedLayout />,
-    HydrateFallback: () => <div className="min-h-screen bg-white" />,
+    HydrateFallback: AppLoader,
     ErrorBoundary: RootErrorBoundary,
     children: [
       {

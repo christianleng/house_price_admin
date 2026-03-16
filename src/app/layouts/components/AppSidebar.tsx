@@ -18,7 +18,9 @@ import { Link } from "react-router";
 import { NAV_MAIN, NAV_SECONDARY } from "@/shared/constants/sidebar";
 import { useAuth } from "@/02-infrastructure/auth/AuthProvider";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export const AppSidebar = React.memo(function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
 
   return (
@@ -53,4 +55,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
     </Sidebar>
   );
-}
+});

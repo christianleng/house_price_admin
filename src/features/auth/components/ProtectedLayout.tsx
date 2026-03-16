@@ -1,9 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router";
 import { useAuth } from "@/02-infrastructure/auth/AuthProvider";
 
+function LoginRedirect() {
+  const location = useLocation();
+  return <Navigate to="/auth/login" state={{ from: location }} replace />;
+}
+
 export const ProtectedLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -16,7 +20,7 @@ export const ProtectedLayout = () => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+    return <LoginRedirect />;
   }
 
   return <Outlet />;
