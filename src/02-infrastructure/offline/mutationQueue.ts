@@ -1,5 +1,6 @@
 import { get, set, del, keys, createStore } from "idb-keyval";
 import type { UpdatePropertyPayload } from "@/00-domain/entities";
+import { emitQueueChanged } from "./queueEvents";
 
 // ── Store dédié — isolation du reste d'IndexedDB ──────────────────────────────
 const store = createStore("house-price-admin", "mutation-queue");
@@ -48,16 +49,7 @@ export async function enqueue(input: MutationInput): Promise<QueuedMutation> {
       : { ...base, type: "deleteProperty" };
 
   await set(buildKey(mutation.id), mutation, store);
-
-  console.group(`🔴 [OfflineQueue] Mutation enqueued — ${mutation.type}`);
-  console.log("propertyId:", mutation.propertyId);
-  if (mutation.type === "updateProperty") console.log("payload:", mutation.payload);
-  console.log("mutationId:", mutation.id);
-  console.log("queuedAt:", new Date(mutation.queuedAt).toISOString());
-  console.groupEnd();
-
-  window.dispatchEvent(new Event("mutation-queue-changed"));
-
+  emitQueueChanged();
   return mutation;
 }
 
@@ -66,7 +58,7 @@ export async function enqueue(input: MutationInput): Promise<QueuedMutation> {
  */
 export async function dequeue(mutationId: string): Promise<void> {
   await del(buildKey(mutationId), store);
-  window.dispatchEvent(new Event("mutation-queue-changed"));
+  emitQueueChanged();
 }
 
 /**
@@ -77,23 +69,9 @@ export async function getAll(): Promise<QueuedMutation[]> {
   const mutations = await Promise.all(
     allKeys.map((key) => get<QueuedMutation>(key, store)),
   );
-  const sorted = mutations
+  return mutations
     .filter((m): m is QueuedMutation => m !== undefined)
     .sort((a, b) => a.queuedAt - b.queuedAt);
-
-  console.group("📦 [OfflineQueue] Queue state");
-  console.log("pending mutations:", sorted.length);
-  console.table(
-    sorted.map((m) => ({
-      id: m.id,
-      type: m.type,
-      propertyId: m.propertyId,
-      queuedAt: new Date(m.queuedAt).toISOString(),
-    })),
-  );
-  console.groupEnd();
-
-  return sorted;
 }
 
 /**
