@@ -26,7 +26,7 @@ import {
   useDeleteProperty,
 } from "@/02-infrastructure/react-query/adminHooks";
 import { DPE_COLORS } from "@/shared/constants/dpe";
-import type { UpdatePropertyPayload } from "@/00-domain/entities";
+import type { PropertyDetail, UpdatePropertyPayload } from "@/00-domain/entities";
 import { StickyActionBar } from "@/shared/ui/StickyActionBar";
 import PropertyStatusSection from "../sections/PropertyStatusSection";
 import PropertyGeneralSection from "../sections/PropertyGeneralSection";
@@ -40,6 +40,46 @@ import PropertyStatusBadge from "./PropertyStatusBadge";
 import PropertyDetailActions from "./PropertyDetailActions";
 import { getTransactionTypeLabel } from "@/00-domain/use-cases/properties/getTransactionTypeLabel";
 
+function toFormValues(p: PropertyDetail): UpdatePropertyPayload {
+  return {
+    title: p.title,
+    description: p.description ?? "",
+    address: p.address ?? "",
+    neighborhood: p.neighborhood,
+    city: p.city,
+    district: p.district,
+    postalCode: p.postalCode,
+    latitude: p.latitude,
+    longitude: p.longitude,
+    price: p.price ?? undefined,
+    rentPriceMonthly: p.rentPriceMonthly ?? undefined,
+    deposit: p.deposit ?? undefined,
+    chargesIncluded: p.chargesIncluded ?? false,
+    transactionType: p.transactionType,
+    propertyType: p.propertyType,
+    surfaceArea: p.surfaceArea,
+    rooms: p.rooms,
+    bedrooms: p.bedrooms,
+    bathrooms: p.bathrooms ?? undefined,
+    toilets: p.toilets ?? undefined,
+    floors: p.floors ?? undefined,
+    floorNumber: p.floorNumber ?? undefined,
+    hasCave: p.hasCave ?? false,
+    hasElevator: p.hasElevator,
+    hasBalcony: p.hasBalcony,
+    hasTerrace: p.hasTerrace,
+    hasGarden: p.hasGarden,
+    hasParking: p.hasParking,
+    parkingSpaces: p.parkingSpaces ?? undefined,
+    energyRating: p.energyRating ?? undefined,
+    heatingType: p.heatingType ?? undefined,
+    constructionYear: p.constructionYear ?? undefined,
+    availableFrom: p.availableFrom ?? undefined,
+    isFurnished: p.isFurnished ?? false,
+    isActive: p.isActive,
+  };
+}
+
 export default function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -48,45 +88,7 @@ export default function PropertyDetailPage() {
   const { mutate: deleteProperty, isPending: isDeleting } = useDeleteProperty();
 
   const { register, handleSubmit, watch, control, reset } =
-    useForm<UpdatePropertyPayload>({
-      defaultValues: {
-        title: property.title,
-        description: property.description ?? "",
-        address: property.address ?? "",
-        neighborhood: property.neighborhood,
-        city: property.city,
-        district: property.district,
-        postalCode: property.postalCode,
-        latitude: property.latitude,
-        longitude: property.longitude,
-        price: property.price ?? undefined,
-        rentPriceMonthly: property.rentPriceMonthly ?? undefined,
-        deposit: property.deposit ?? undefined,
-        chargesIncluded: property.chargesIncluded ?? false,
-        transactionType: property.transactionType,
-        propertyType: property.propertyType,
-        surfaceArea: property.surfaceArea,
-        rooms: property.rooms,
-        bedrooms: property.bedrooms,
-        bathrooms: property.bathrooms ?? undefined,
-        toilets: property.toilets ?? undefined,
-        floors: property.floors ?? undefined,
-        floorNumber: property.floorNumber ?? undefined,
-        hasCave: property.hasCave ?? false,
-        hasElevator: property.hasElevator,
-        hasBalcony: property.hasBalcony,
-        hasTerrace: property.hasTerrace,
-        hasGarden: property.hasGarden,
-        hasParking: property.hasParking,
-        parkingSpaces: property.parkingSpaces ?? undefined,
-        energyRating: property.energyRating ?? undefined,
-        heatingType: property.heatingType ?? undefined,
-        constructionYear: property.constructionYear ?? undefined,
-        availableFrom: property.availableFrom ?? undefined,
-        isFurnished: property.isFurnished ?? false,
-        isActive: property.isActive,
-      },
-    });
+    useForm<UpdatePropertyPayload>({ defaultValues: toFormValues(property) });
 
   function onSubmit(data: UpdatePropertyPayload) {
     update(data);
@@ -101,13 +103,7 @@ export default function PropertyDetailPage() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="min-h-full bg-background">
-        <div
-          className="px-8 pt-8 pb-6"
-          style={{
-            background:
-              "linear-gradient(135deg, var(--primary) 0%, #1a5fa8 100%)",
-          }}
-        >
+        <div className="px-8 pt-8 pb-6 bg-linear-to-br from-primary to-primary/70">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <Button
@@ -180,32 +176,6 @@ export default function PropertyDetailPage() {
                 isSaving={isSaving}
                 onCancel={() => reset()}
               />
-              {/* {isDirty && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
-                  onClick={() => window.location.reload()}
-                >
-                  <IconX className="size-3.5 mr-1" />
-                  Annuler
-                </Button>
-              )}
-
-              <Button
-                type="submit"
-                size="sm"
-                className="h-8 text-xs bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                disabled={!isDirty || isSaving}
-              >
-                {isSaving ? (
-                  <IconLoader2 className="size-3.5 mr-1 animate-spin" />
-                ) : saveSuccess ? (
-                  <IconCheck className="size-3.5 mr-1 text-status-success" />
-                ) : null}
-                {saveSuccess ? "Enregistré" : "Enregistrer"}
-              </Button> */}
             </div>
           </div>
 
