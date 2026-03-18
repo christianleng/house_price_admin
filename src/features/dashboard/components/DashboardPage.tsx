@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 import { RecentSection } from "../sections/RecentSection";
 import { StagnantSection } from "../sections/StagnantSection";
 import { QualityScoreSection } from "../sections/QualityScoreSection";
@@ -7,7 +5,11 @@ import { AlertsSection } from "../sections/AlertsSection";
 import { KpiRowSection } from "../sections/KpiRowSection";
 import { CityPerformanceSection } from "../sections/CityPerformanceSection";
 import { AsyncSection } from "@/shared/ui/AsyncSection";
-import { KpiGroupSkeleton, SectionSkeleton } from "./DashboardSkeletons";
+import {
+  AlertsSkeleton,
+  KpiGroupSkeleton,
+  SectionSkeleton,
+} from "./DashboardSkeletons";
 
 export default function DashboardPage() {
   return (
@@ -21,11 +23,9 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <ErrorBoundary fallback={null}>
-        <Suspense fallback={null}>
-          <AlertsSection />
-        </Suspense>
-      </ErrorBoundary>
+      <AsyncSection fallback={<AlertsSkeleton />}>
+        <AlertsSection />
+      </AsyncSection>
 
       <div className="dashboard-layout">
         <div className="area-kpi">
