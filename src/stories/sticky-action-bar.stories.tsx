@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Control } from "react-hook-form";
 import { StickyActionBar } from "@/shared/ui/StickyActionBar";
 import type { UpdatePropertyPayload } from "@/00-domain/entities";
 
@@ -17,6 +17,11 @@ type Story = StoryObj<typeof meta>;
 // et ne s'affiche que si isDirty est true — on crée un wrapper pour chaque story.
 
 export const Visible: Story = {
+  args: {
+    control: {} as unknown as Control<UpdatePropertyPayload>,
+    isSaving: false,
+    onCancel: () => {},
+  },
   render: () => {
     const { control, setValue } = useForm<UpdatePropertyPayload>({
       defaultValues: { title: "Original" },
@@ -42,6 +47,11 @@ export const Visible: Story = {
 };
 
 export const Saving: Story = {
+  args: {
+    control: {} as unknown as Control<UpdatePropertyPayload>,
+    isSaving: true,
+    onCancel: () => {},
+  },
   render: () => {
     const { control, setValue } = useForm<UpdatePropertyPayload>({
       defaultValues: { title: "Original" },
@@ -64,6 +74,11 @@ export const Saving: Story = {
 };
 
 export const Hidden: Story = {
+  args: {
+    control: {} as unknown as Control<UpdatePropertyPayload>,
+    isSaving: false,
+    onCancel: () => {},
+  },
   render: () => {
     const { control } = useForm<UpdatePropertyPayload>({
       defaultValues: { title: "Original" },

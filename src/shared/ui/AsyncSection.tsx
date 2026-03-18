@@ -16,10 +16,11 @@ export function AsyncSection({
 }: {
   children: ReactNode;
   fallback: ReactNode;
-  errorTitle: string;
+  errorTitle?: string;
 }) {
+  const errorFallback = errorTitle ? <SectionError title={errorTitle} /> : null;
   return (
-    <ErrorBoundary fallback={<SectionError title={errorTitle} />}>
+    <ErrorBoundary fallback={errorFallback}>
       <Suspense fallback={fallback}>{children}</Suspense>
     </ErrorBoundary>
   );

@@ -80,6 +80,30 @@ export default defineConfig({
     }),
   ],
 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("/react-dom/") || id.includes("/react-dom@")) {
+            return "vendor-react-dom";
+          }
+          if (
+            (id.includes("/node_modules/react/") || id.includes("/react@")) &&
+            !id.includes("react-router") &&
+            !id.includes("react-hook-form")
+          ) {
+            return "vendor-react";
+          }
+          if (id.includes("react-router")) return "vendor-router";
+          if (id.includes("@tanstack/react-query")) return "vendor-query";
+          if (id.includes("react-hook-form") || id.includes("/zod/"))
+            return "vendor-forms";
+          if (id.includes("radix-ui")) return "vendor-ui";
+        },
+      },
+    },
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
