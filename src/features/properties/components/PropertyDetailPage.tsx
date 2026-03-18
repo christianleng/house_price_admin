@@ -26,7 +26,10 @@ import {
   useDeleteProperty,
 } from "@/02-infrastructure/react-query/adminHooks";
 import { DPE_COLORS } from "@/shared/constants/dpe";
-import type { PropertyDetail, UpdatePropertyPayload } from "@/00-domain/entities";
+import type {
+  PropertyDetail,
+  UpdatePropertyPayload,
+} from "@/00-domain/entities";
 import { StickyActionBar } from "@/shared/ui/StickyActionBar";
 import PropertyStatusSection from "../sections/PropertyStatusSection";
 import PropertyGeneralSection from "../sections/PropertyGeneralSection";

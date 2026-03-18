@@ -1,10 +1,10 @@
 import type { LoginCredentials, User } from "@/00-domain/entities";
-import { tokenStorage } from "./TokenStorageAdapter";
-import { API_ENDPOINTS } from "./EndPoints";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
+import { API_ENDPOINTS } from "./endpoints";
 import { apiClient } from "./ApiClient";
 import type { IAuthService } from "@/00-domain/ports";
-import { AuthTokenDtoSchema, ApiUserDtoSchema } from "./schemas";
-import type { ApiUserDto } from "./schemas";
+import { AuthTokenDtoSchema, ApiUserDtoSchema } from "./dtoSchemas";
+import type { ApiUserDto } from "./dtoSchemas";
 
 function mapUser(dto: ApiUserDto): User {
   return {

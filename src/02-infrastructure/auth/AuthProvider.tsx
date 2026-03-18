@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { LoginCredentials, User } from "@/00-domain/entities";
-import { tokenStorage } from "@/01-adapters/http/TokenStorageAdapter";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
 import {
   useCurrentUser,
   useLoginMutation,

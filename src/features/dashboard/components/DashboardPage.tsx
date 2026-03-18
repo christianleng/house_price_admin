@@ -6,7 +6,7 @@ import { QualityScoreSection } from "../sections/QualityScoreSection";
 import { AlertsSection } from "../sections/AlertsSection";
 import { KpiRowSection } from "../sections/KpiRowSection";
 import { CityPerformanceSection } from "../sections/CityPerformanceSection";
-import { AsyncSection } from "./AsyncSection";
+import { AsyncSection } from "@/shared/ui/AsyncSection";
 import { KpiGroupSkeleton, SectionSkeleton } from "./DashboardSkeletons";
 
 export default function DashboardPage() {

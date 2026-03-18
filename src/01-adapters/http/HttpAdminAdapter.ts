@@ -10,8 +10,11 @@ import type {
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
-import type { IAdminQueryService, IAdminMutationService } from "@/00-domain/ports";
-import { API_ENDPOINTS } from "./EndPoints";
+import type {
+  IAdminQueryService,
+  IAdminMutationService,
+} from "@/00-domain/ports";
+import { API_ENDPOINTS } from "./endpoints";
 import { apiClient } from "./ApiClient";
 import {
   GlobalStatsDtoSchema,
@@ -19,7 +22,7 @@ import {
   CitiesPerformanceDtoSchema,
   AdminPropertiesDtoSchema,
   PropertyDetailDtoSchema,
-} from "./schemas";
+} from "./dtoSchemas";
 import type {
   StagnantPropertyDto,
   QualityScoreDto,
@@ -31,7 +34,7 @@ import type {
   AdminPropertiesDto,
   PhotoDetailDto,
   PropertyDetailDto,
-} from "./schemas";
+} from "./dtoSchemas";
 
 function mapStagnantProperty(dto: StagnantPropertyDto): StagnantProperty {
   return {

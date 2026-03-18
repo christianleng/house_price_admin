@@ -146,7 +146,7 @@ class APIClient {
   }
 }
 
-import { tokenStorage } from "./TokenStorageAdapter";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
 
 export const apiClient = new APIClient(
   env.API_URL,
