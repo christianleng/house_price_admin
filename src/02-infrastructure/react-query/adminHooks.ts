@@ -4,18 +4,16 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { adminQueryService } from "@/01-adapters/http/HttpAdminAdapter";
-import { offlineAdminMutationService } from "@/02-infrastructure/offline/offlineAdminMutationService";
+import { offlineAdminMutationService } from "@/02-infrastructure/offline/OfflineAdminMutationService";
 import type {
   AdminPropertiesFilters,
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
 
-// Durées de cache par domaine métier
-// Stats globales (agrégats backend, lentes à changer) : 5 min
 const STATS_STALE_TIME = 1000 * 60 * 5;
-// Propriétés (données métier, modifiables par l'admin) : 2 min
 const PROPERTY_STALE_TIME = 1000 * 60 * 2;
+export const DEFAULT_MONTHLY_STATS_MONTHS = 6;
 
 export const ADMIN_KEYS = {
   all: () => ["admin"] as const,
@@ -39,7 +37,7 @@ export const globalStatsQuery = {
   staleTime: STATS_STALE_TIME,
 };
 
-export const monthlyStatsQuery = (months = 6) => ({
+export const monthlyStatsQuery = (months = DEFAULT_MONTHLY_STATS_MONTHS) => ({
   queryKey: ADMIN_KEYS.monthlyStats(months),
   queryFn: () => adminQueryService.getMonthlyStats(months),
   staleTime: STATS_STALE_TIME,
@@ -67,7 +65,7 @@ export function useGlobalStats() {
   return useSuspenseQuery(globalStatsQuery);
 }
 
-export function useMonthlyStats(months = 6) {
+export function useMonthlyStats(months = DEFAULT_MONTHLY_STATS_MONTHS) {
   return useSuspenseQuery(monthlyStatsQuery(months));
 }
 
@@ -89,9 +87,6 @@ export function useUpdateProperty(id: string) {
   return useMutation({
     networkMode: "always",
 
-    mutationFn: (payload: UpdatePropertyPayload) =>
-      offlineAdminMutationService.updateProperty(id, payload),
-
     onMutate: async (payload) => {
       await queryClient.cancelQueries({
         queryKey: ADMIN_KEYS.propertyDetail(id),
@@ -108,6 +103,9 @@ export function useUpdateProperty(id: string) {
 
       return { previousProperty };
     },
+
+    mutationFn: (payload: UpdatePropertyPayload) =>
+      offlineAdminMutationService.updateProperty(id, payload),
 
     onError: async (_error, _payload, context) => {
       if (context?.previousProperty) {
@@ -129,8 +127,7 @@ export function useDeleteProperty() {
   const queryClient = useQueryClient();
   return useMutation({
     networkMode: "always",
-    mutationFn: (id: string) =>
-      offlineAdminMutationService.deleteProperty(id),
+    mutationFn: (id: string) => offlineAdminMutationService.deleteProperty(id),
     onSuccess: (_data, id) => {
       queryClient.removeQueries({ queryKey: ADMIN_KEYS.propertyDetail(id) });
       queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });

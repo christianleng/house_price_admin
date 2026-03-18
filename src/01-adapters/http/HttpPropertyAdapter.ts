@@ -1,9 +1,9 @@
 import type { PaginatedResult, RecentProperty } from "@/00-domain/entities";
 import type { IPropertyService } from "@/00-domain/ports";
 import { apiClient } from "./ApiClient";
-import { API_ENDPOINTS } from "./EndPoints";
-import { RecentPropertiesResponseDtoSchema } from "./schemas";
-import type { RecentPropertyDto } from "./schemas";
+import { API_ENDPOINTS } from "./endpoints";
+import { RecentPropertiesResponseDtoSchema } from "./dtoSchemas";
+import type { RecentPropertyDto } from "./dtoSchemas";
 
 function mapRecentProperty(dto: RecentPropertyDto): RecentProperty {
   return {

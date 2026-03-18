@@ -1,7 +1,7 @@
 import RootErrorBoundary from "@/shared/pages/RootErrorBoundary";
 import AppLoader from "@/shared/pages/AppLoader";
 import RootLayout from "../../app/layouts/RootLayout";
-import { ProtectedLayout } from "@/features/auth/components/ProtectedLayout";
+import { ProtectedLayout } from "@/app/layouts/ProtectedLayout";
 import { queryClient } from "../react-query/queryClient";
 import {
   adminPropertiesQuery,
@@ -9,8 +9,12 @@ import {
   globalStatsQuery,
   monthlyStatsQuery,
   propertyDetailQuery,
+  DEFAULT_MONTHLY_STATS_MONTHS,
 } from "../react-query/adminHooks";
-import { recentPropertiesQuery } from "../react-query/propertyHooks";
+import {
+  recentPropertiesQuery,
+  DEFAULT_RECENT_PROPERTIES_LIMIT,
+} from "../react-query/propertyHooks";
 import { filtersFromParams } from "@/shared/utils/propertyFilters";
 import type { LoaderFunctionArgs } from "react-router";
 
@@ -28,8 +32,12 @@ export const routes = [
             index: true,
             loader: () => {
               queryClient.prefetchQuery(globalStatsQuery);
-              queryClient.prefetchQuery(monthlyStatsQuery(6));
-              queryClient.prefetchQuery(recentPropertiesQuery(5));
+              queryClient.prefetchQuery(
+                monthlyStatsQuery(DEFAULT_MONTHLY_STATS_MONTHS),
+              );
+              queryClient.prefetchQuery(
+                recentPropertiesQuery(DEFAULT_RECENT_PROPERTIES_LIMIT),
+              );
               queryClient.prefetchQuery(citiesPerformanceQuery);
               return null;
             },

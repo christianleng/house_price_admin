@@ -23,7 +23,11 @@ export type QueuedMutation =
     };
 
 type MutationInput =
-  | { type: "updateProperty"; propertyId: string; payload: UpdatePropertyPayload }
+  | {
+      type: "updateProperty";
+      propertyId: string;
+      payload: UpdatePropertyPayload;
+    }
   | { type: "deleteProperty"; propertyId: string };
 
 function buildKey(mutationId: string): string {
