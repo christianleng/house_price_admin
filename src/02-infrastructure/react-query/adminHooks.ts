@@ -108,6 +108,7 @@ export function useUpdateProperty(id: string) {
       offlineAdminMutationService.updateProperty(id, payload),
 
     onError: async (_error, _payload, context) => {
+      if (!navigator.onLine) return;
       if (context?.previousProperty) {
         queryClient.setQueryData(
           ADMIN_KEYS.propertyDetail(id),

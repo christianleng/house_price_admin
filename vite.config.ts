@@ -23,9 +23,6 @@ export default defineConfig({
       // Le Service Worker s'enregistre automatiquement
       registerType: "autoUpdate",
 
-      // Fichiers à precacher au premier chargement
-      includeAssets: ["vite.svg"],
-
       manifest: {
         name: "House Price Admin",
         short_name: "PropAdmin",
@@ -67,9 +64,8 @@ export default defineConfig({
           },
         ],
 
-        // Précache tous les assets buildés (index.html, JS, CSS)
-        // → résout ERR_INTERNET_DISCONNECTED au refresh
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Précache tous les assets buildés (index.html, JS, CSS, fonts)
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
       },
 
       // En dev, active le SW pour pouvoir tester offline
@@ -111,6 +107,14 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+    },
+  },
+  preview: {
     proxy: {
       "/api": {
         target: "http://localhost:8000",

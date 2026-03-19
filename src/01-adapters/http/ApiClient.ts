@@ -21,7 +21,7 @@ class APIClient {
   }
 
   private buildURL<P extends object>(endpoint: string, params?: P): string {
-    const url = new URL(`${this.baseURL}${endpoint}`);
+    const url = new URL(endpoint, this.baseURL || window.location.origin);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

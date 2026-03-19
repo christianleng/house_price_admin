@@ -221,7 +221,10 @@ export default function PropertyDetailPage() {
 
         <div className="px-8 py-6 space-y-4">
           <PropertyStatusSection control={control} />
-          <PropertyGeneralSection control={control} register={register} />
+          <PropertyGeneralSection
+            // control={control}
+            register={register}
+          />
           <PropertyLocationSection register={register} />
           <PropertyPriceSection
             control={control}

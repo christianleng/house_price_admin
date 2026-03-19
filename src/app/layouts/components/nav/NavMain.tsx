@@ -14,7 +14,11 @@ const NavMainItem = memo(({ item }: { item: NavItem }) => (
   <SidebarMenuItem>
     <NavLink to={item.url} end={item.url === "/"}>
       {({ isActive }) => (
-        <SidebarMenuButton size="lg" isActive={isActive}>
+        <SidebarMenuButton
+          size="lg"
+          isActive={isActive}
+          className="hover:cursor-pointer"
+        >
           {item.icon && <item.icon />}
           <span className="text-base">{item.title}</span>
         </SidebarMenuButton>
