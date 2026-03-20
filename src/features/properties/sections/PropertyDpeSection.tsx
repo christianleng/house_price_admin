@@ -1,4 +1,4 @@
-import { ENERGY_RATINGS } from "@/00-domain/constants/property/property";
+import { ENERGY_RATINGS } from "@/00-domain/constants/property";
 import type { UpdatePropertyPayload } from "@/00-domain/entities";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";

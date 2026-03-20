@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getAll, dequeue } from "@/02-infrastructure/offline/mutationQueue";
-import { adminService } from "@/01-adapters/http/HttpAdminAdapter";
+import { adminMutationService } from "@/01-adapters/http/HttpAdminAdapter";
+import { ApiError } from "@/01-adapters/http/ApiError";
 import { ADMIN_KEYS } from "@/02-infrastructure/react-query/adminHooks";
 
 export function useSyncOnline() {
@@ -15,51 +16,40 @@ export function useSyncOnline() {
       const pending = await getAll();
       if (pending.length === 0) return;
 
-      console.group(`🔄 [SyncOnline] Replaying ${pending.length} mutation(s)`);
-
       let syncedCount = 0;
 
       for (const mutation of pending) {
         try {
-          const updated = await adminService.updateProperty(
-            mutation.propertyId,
-            mutation.payload,
-          );
-          await dequeue(mutation.id);
-          queryClient.setQueryData(
-            ADMIN_KEYS.propertyDetail(mutation.propertyId),
-            updated,
-          );
-          queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });
-          syncedCount++;
-          console.log("✅ synced:", mutation.propertyId);
-        } catch (error) {
-          const isServerError =
-            error instanceof Error &&
-            "status" in error &&
-            typeof error.status === "number" &&
-            error.status >= 400 &&
-            error.status < 500;
-
-          if (isServerError) {
-            console.warn(
-              "⚠️ invalid payload, discarding mutation:",
+          if (mutation.type === "updateProperty") {
+            const updated = await adminMutationService.updateProperty(
               mutation.propertyId,
-              error,
+              mutation.payload,
             );
             await dequeue(mutation.id);
-          } else {
-            console.error(
-              "❌ network error, will retry:",
-              mutation.propertyId,
-              error,
+            queryClient.setQueryData(
+              ADMIN_KEYS.propertyDetail(mutation.propertyId),
+              updated,
             );
+          } else {
+            await adminMutationService.deleteProperty(mutation.propertyId);
+            await dequeue(mutation.id);
+            queryClient.removeQueries({
+              queryKey: ADMIN_KEYS.propertyDetail(mutation.propertyId),
+            });
+          }
+
+          queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });
+          syncedCount++;
+        } catch (error) {
+          // Erreur 4xx : payload invalide, on discard la mutation
+          if (error instanceof ApiError && error.isClientError) {
+            await dequeue(mutation.id);
+          } else {
+            // Erreur réseau ou 5xx : on arrête et on réessaiera au prochain online
             break;
           }
         }
       }
-
-      console.groupEnd();
 
       if (syncedCount > 0) {
         toast.success(

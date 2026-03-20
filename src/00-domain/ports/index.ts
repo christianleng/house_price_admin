@@ -31,7 +31,7 @@ export interface IPropertyService {
   getRecent(limit: number): Promise<PaginatedResult<RecentProperty>>;
 }
 
-export interface IAdminService {
+export interface IAdminQueryService {
   getGlobalStats(): Promise<PropertyGlobalStats>;
   getMonthlyStats(months?: number): Promise<PropertyMonthlyStats>;
   getCitiesPerformance(): Promise<CitiesPerformanceStats>;
@@ -39,6 +39,9 @@ export interface IAdminService {
     filters: AdminPropertiesFilters,
   ): Promise<AdminPropertiesResponse>;
   getPropertyById(id: string): Promise<PropertyDetail>;
+}
+
+export interface IAdminMutationService {
   updateProperty(
     id: string,
     payload: UpdatePropertyPayload,

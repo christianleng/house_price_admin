@@ -1,31 +1,15 @@
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { RecentSection } from "./sections/RecentSection";
-import { StagnantSection } from "./sections/StagnantSection";
-import { QualityScoreSection } from "./sections/QualityScoreSection";
-import { AlertsSection } from "./sections/AlertsSection";
-import { KpiRowSection } from "./sections/KpiRowSection";
-import { KpiSkeleton } from "@/shared/ui/KpiCard";
-import { Skeleton } from "@/shared/ui/skeleton";
-import { CityPerformanceSection } from "./sections/CityPerformanceSection";
-
-function SectionError({ title }: { title: string }) {
-  return (
-    <div className="rounded-sm border border-alert-urgent-border bg-alert-urgent-bg p-4 text-sm text-status-error">
-      Impossible de charger {title}
-    </div>
-  );
-}
-
-function KpiGroupSkeleton() {
-  return (
-    <div className="kpi-group">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <KpiSkeleton key={i} />
-      ))}
-    </div>
-  );
-}
+import { RecentSection } from "../sections/RecentSection";
+import { StagnantSection } from "../sections/StagnantSection";
+import { QualityScoreSection } from "../sections/QualityScoreSection";
+import { AlertsSection } from "../sections/AlertsSection";
+import { KpiRowSection } from "../sections/KpiRowSection";
+import { CityPerformanceSection } from "../sections/CityPerformanceSection";
+import { AsyncSection } from "@/shared/ui/AsyncSection";
+import {
+  AlertsSkeleton,
+  KpiGroupSkeleton,
+  SectionSkeleton,
+} from "./DashboardSkeletons";
 
 export default function DashboardPage() {
   return (
@@ -39,65 +23,51 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <ErrorBoundary fallback={null}>
-        <Suspense fallback={null}>
-          <AlertsSection />
-        </Suspense>
-      </ErrorBoundary>
+      <AsyncSection fallback={<AlertsSkeleton />}>
+        <AlertsSection />
+      </AsyncSection>
 
       <div className="dashboard-layout">
         <div className="area-kpi">
-          <ErrorBoundary fallback={<SectionError title="les KPIs" />}>
-            <Suspense fallback={<KpiGroupSkeleton />}>
-              <KpiRowSection />
-            </Suspense>
-          </ErrorBoundary>
+          <AsyncSection fallback={<KpiGroupSkeleton />} errorTitle="les KPIs">
+            <KpiRowSection />
+          </AsyncSection>
         </div>
 
         <div className="area-recent">
-          <ErrorBoundary
-            fallback={<SectionError title="les dernières propriétés" />}
+          <AsyncSection
+            fallback={<SectionSkeleton contentHeight="h-52" />}
+            errorTitle="les dernières propriétés"
           >
-            <Suspense
-              fallback={<Skeleton className="h-64 w-full rounded-sm" />}
-            >
-              <RecentSection />
-            </Suspense>
-          </ErrorBoundary>
+            <RecentSection />
+          </AsyncSection>
         </div>
 
         <div className="area-stagnant">
-          <ErrorBoundary
-            fallback={<SectionError title="les biens stagnants" />}
+          <AsyncSection
+            fallback={<SectionSkeleton contentHeight="h-40" />}
+            errorTitle="les biens stagnants"
           >
-            <Suspense
-              fallback={<Skeleton className="h-48 w-full rounded-sm" />}
-            >
-              <StagnantSection />
-            </Suspense>
-          </ErrorBoundary>
+            <StagnantSection />
+          </AsyncSection>
         </div>
 
         <div className="area-quality-score">
-          <ErrorBoundary fallback={<SectionError title="le score qualité" />}>
-            <Suspense
-              fallback={<Skeleton className="h-48 w-full rounded-sm" />}
-            >
-              <QualityScoreSection />
-            </Suspense>
-          </ErrorBoundary>
+          <AsyncSection
+            fallback={<SectionSkeleton contentHeight="h-40" />}
+            errorTitle="le score qualité"
+          >
+            <QualityScoreSection />
+          </AsyncSection>
         </div>
 
         <div className="area-cities">
-          <ErrorBoundary
-            fallback={<SectionError title="la performance par ville" />}
+          <AsyncSection
+            fallback={<SectionSkeleton contentHeight="h-52" />}
+            errorTitle="la performance par ville"
           >
-            <Suspense
-              fallback={<Skeleton className="h-64 w-full rounded-sm" />}
-            >
-              <CityPerformanceSection />
-            </Suspense>
-          </ErrorBoundary>
+            <CityPerformanceSection />
+          </AsyncSection>
         </div>
       </div>
     </div>

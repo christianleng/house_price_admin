@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { LoginCredentials, User } from "@/00-domain/entities";
-import { tokenStorage } from "@/01-adapters/http/TokenStorageAdapter";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
 import {
   useCurrentUser,
   useLoginMutation,
@@ -24,6 +24,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     tokenStorage.getToken(),
   );
 
+  useEffect(() => {
+    const handleUnauthorized = () => setToken(undefined);
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  }, []);
+
   const {
     data: user,
     isFetched,
@@ -34,28 +40,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginMutation = useLoginMutation();
   const logoutMutation = useLogoutMutation();
 
-  const logout = () => {
+  const logout = useCallback(() => {
     logoutMutation.mutate();
     setToken(undefined);
-  };
+  }, [logoutMutation]);
+
+  const login = useCallback(
+    async (credentials: LoginCredentials) => {
+      await loginMutation.mutateAsync(credentials);
+      setToken(tokenStorage.getToken());
+    },
+    [loginMutation],
+  );
 
   const isLoading =
     (!!token && !isFetched) || loginMutation.isPending || isFetching;
 
+  const value = useMemo(
+    () => ({
+      user: user ?? null,
+      isAuthenticated: !!token,
+      isLoading,
+      error: (userError as Error) || (loginMutation.error as Error),
+      login,
+      logout,
+    }),
+    [user, token, isLoading, userError, loginMutation.error, login, logout],
+  );
+
   return (
-    <AuthContext.Provider
-      value={{
-        user: user ?? null,
-        isAuthenticated: !!token,
-        isLoading,
-        error: (userError as Error) || (loginMutation.error as Error),
-        login: async (credentials) => {
-          await loginMutation.mutateAsync(credentials);
-          setToken(tokenStorage.getToken());
-        },
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

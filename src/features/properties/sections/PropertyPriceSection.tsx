@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPES } from "@/00-domain/constants/property/property";
+import { TRANSACTION_TYPES } from "@/00-domain/constants/property";
 import type { UpdatePropertyPayload } from "@/00-domain/entities";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";

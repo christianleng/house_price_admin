@@ -1,5 +1,5 @@
 import { IconWifiOff } from "@tabler/icons-react";
-import { useOnlineStatus } from "@/shared/hooks/use-OnlineStatus";
+import { useOnlineStatus } from "@/shared/hooks/useOnlineStatus";
 
 export function OfflineBanner() {
   const isOnline = useOnlineStatus();

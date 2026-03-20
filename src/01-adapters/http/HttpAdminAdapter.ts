@@ -10,159 +10,31 @@ import type {
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
-import type { IAdminService } from "@/00-domain/ports";
-import { API_ENDPOINTS } from "./EndPoints";
+import type {
+  IAdminQueryService,
+  IAdminMutationService,
+} from "@/00-domain/ports";
+import { API_ENDPOINTS } from "./endpoints";
 import { apiClient } from "./ApiClient";
-import type { TransactionType } from "@/00-domain/constants/property/property";
-
-interface StagnantPropertyDto {
-  id: string;
-  reference: string;
-  title: string;
-  city: string;
-  transaction_type: TransactionType;
-  price: number | null;
-  rent_price_monthly: number | null;
-  energy_rating: string | null;
-  days_stagnant: number;
-  thumbnail_url: string | null;
-}
-
-interface QualityScoreDto {
-  photos: number;
-  description: number;
-  price: number;
-  energy_rating: number;
-  surface: number;
-  global_score: number;
-}
-
-interface GlobalStatsDto {
-  total: number;
-  active: number;
-  inactive: number;
-  for_sale: number;
-  for_rent: number;
-  avg_sale_price: number | null;
-  avg_rent_price: number | null;
-  without_photos: number;
-  without_price: number;
-  by_energy_rating: Record<string, number>;
-  by_property_type: Record<string, number>;
-  by_city: Record<string, number>;
-  at_risk_dpe: number;
-  available_soon: number;
-  avg_age_days: number | null;
-  avg_sale_delay_days: number | null;
-  stagnant_properties: StagnantPropertyDto[];
-  quality_score: QualityScoreDto;
-  price_per_sqm_by_city: Record<string, number>;
-}
-
-interface MonthlyPeriodDto {
-  month: string;
-  added: number;
-  for_sale: number;
-  for_rent: number;
-}
-
-interface MonthlyStatsDto {
-  periods: MonthlyPeriodDto[];
-  trend_percent: number | null;
-}
-
-interface CityPerformanceDto {
-  city: string;
-  nb_biens: number;
-  avg_price_per_sqm: number | null;
-  avg_sale_delay: number | null;
-}
-
-interface CitiesPerformanceDto {
-  cities: CityPerformanceDto[];
-}
-
-interface AdminPropertyDto {
-  id: string;
-  reference: string | null;
-  title: string;
-  city: string;
-  postal_code: string;
-  transaction_type: TransactionType;
-  property_type: string;
-  price: number | null;
-  rent_price_monthly: number | null;
-  surface_area: number;
-  rooms: number;
-  energy_rating: string;
-  is_active: boolean;
-  photos_count: number;
-  views_count: number;
-  created_at: string;
-  updated_at: string;
-  thumbnail_url: string | null;
-}
-
-interface AdminPropertiesDto {
-  items: AdminPropertyDto[];
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
-}
-
-interface PhotoDetailDto {
-  id: string;
-  url: string;
-  is_primary: boolean;
-  order: number;
-}
-
-interface PropertyDetailDto {
-  id: string;
-  agent_id: string;
-  reference: string;
-  title: string;
-  description: string | null;
-  address: string | null;
-  neighborhood: string;
-  city: string;
-  district: string;
-  postal_code: string;
-  latitude: number;
-  longitude: number;
-  price: number | null;
-  price_per_sqm: number | null;
-  rent_price_monthly: number | null;
-  deposit: number | null;
-  charges_included: boolean | null;
-  transaction_type: TransactionType;
-  property_type: string;
-  surface_area: number;
-  rooms: number;
-  bedrooms: number;
-  bathrooms: number | null;
-  toilets: number | null;
-  floors: number | null;
-  floor_number: number | null;
-  has_cave: boolean | null;
-  has_elevator: boolean;
-  has_balcony: boolean;
-  has_terrace: boolean;
-  has_garden: boolean;
-  has_parking: boolean;
-  parking_spaces: number | null;
-  energy_rating: string | null;
-  heating_type: string | null;
-  construction_year: number | null;
-  available_from: string | null;
-  is_furnished: boolean | null;
-  photos: PhotoDetailDto[];
-  thumbnail_url: string | null;
-  created_at: string;
-  updated_at: string | null;
-  is_active: boolean;
-}
+import {
+  GlobalStatsDtoSchema,
+  MonthlyStatsDtoSchema,
+  CitiesPerformanceDtoSchema,
+  AdminPropertiesDtoSchema,
+  PropertyDetailDtoSchema,
+} from "./dtoSchemas";
+import type {
+  StagnantPropertyDto,
+  QualityScoreDto,
+  GlobalStatsDto,
+  MonthlyStatsDto,
+  CityPerformanceDto,
+  CitiesPerformanceDto,
+  AdminPropertyDto,
+  AdminPropertiesDto,
+  PhotoDetailDto,
+  PropertyDetailDto,
+} from "./dtoSchemas";
 
 function mapStagnantProperty(dto: StagnantPropertyDto): StagnantProperty {
   return {
@@ -230,7 +102,7 @@ function mapCitiesPerformance(
   dto: CitiesPerformanceDto,
 ): CitiesPerformanceStats {
   return {
-    cities: dto.cities.map((c) => ({
+    cities: dto.cities.map((c: CityPerformanceDto) => ({
       city: c.city,
       nbBiens: c.nb_biens,
       avgPricePerSqm: c.avg_price_per_sqm,
@@ -312,7 +184,7 @@ function mapPropertyDetail(dto: PropertyDetailDto): PropertyDetail {
     constructionYear: dto.construction_year,
     availableFrom: dto.available_from,
     isFurnished: dto.is_furnished,
-    photos: dto.photos.map((p) => ({
+    photos: dto.photos.map((p: PhotoDetailDto) => ({
       id: p.id,
       url: p.url,
       isPrimary: p.is_primary,
@@ -325,104 +197,76 @@ function mapPropertyDetail(dto: PropertyDetailDto): PropertyDetail {
   };
 }
 
-function toSnakeCase(payload: UpdatePropertyPayload): Record<string, unknown> {
-  return {
-    title: payload.title,
-    description: payload.description,
-    address: payload.address,
-    neighborhood: payload.neighborhood,
-    city: payload.city,
-    district: payload.district,
-    postal_code: payload.postalCode,
-    latitude: payload.latitude,
-    longitude: payload.longitude,
-    price: payload.price,
-    rent_price_monthly: payload.rentPriceMonthly,
-    deposit: payload.deposit,
-    charges_included: payload.chargesIncluded,
-    transaction_type: payload.transactionType,
-    property_type: payload.propertyType,
-    surface_area: payload.surfaceArea,
-    rooms: payload.rooms,
-    bedrooms: payload.bedrooms,
-    bathrooms: payload.bathrooms,
-    toilets: payload.toilets,
-    floors: payload.floors,
-    floor_number: payload.floorNumber,
-    has_cave: payload.hasCave,
-    has_elevator: payload.hasElevator,
-    has_balcony: payload.hasBalcony,
-    has_terrace: payload.hasTerrace,
-    has_garden: payload.hasGarden,
-    has_parking: payload.hasParking,
-    parking_spaces: payload.parkingSpaces,
-    energy_rating: payload.energyRating,
-    heating_type: payload.heatingType,
-    construction_year: payload.constructionYear,
-    available_from: payload.availableFrom,
-    is_furnished: payload.isFurnished,
-    is_active: payload.isActive,
-  };
+function toSnakeCase(obj: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`),
+      value,
+    ]),
+  );
 }
 
-export const adminService: IAdminService = {
+export const adminQueryService: IAdminQueryService = {
   async getGlobalStats(): Promise<PropertyGlobalStats> {
-    const dto = await apiClient.get<GlobalStatsDto>(API_ENDPOINTS.ADMIN.STATS);
+    const raw = await apiClient.get<unknown>(API_ENDPOINTS.ADMIN.STATS);
+    const dto = GlobalStatsDtoSchema.parse(raw);
     return mapGlobalStats(dto);
   },
 
   async getMonthlyStats(months = 6): Promise<PropertyMonthlyStats> {
-    const dto = await apiClient.get<MonthlyStatsDto>(
+    const raw = await apiClient.get<unknown>(
       API_ENDPOINTS.ADMIN.STATS_MONTHLY,
       { params: { months } },
     );
+    const dto = MonthlyStatsDtoSchema.parse(raw);
     return mapMonthlyStats(dto);
   },
 
   async getCitiesPerformance(): Promise<CitiesPerformanceStats> {
-    const dto = await apiClient.get<CitiesPerformanceDto>(
-      API_ENDPOINTS.ADMIN.STATS_CITIES,
-    );
+    const raw = await apiClient.get<unknown>(API_ENDPOINTS.ADMIN.STATS_CITIES);
+    const dto = CitiesPerformanceDtoSchema.parse(raw);
     return mapCitiesPerformance(dto);
   },
 
   async getAdminProperties(
     filters: AdminPropertiesFilters,
   ): Promise<AdminPropertiesResponse> {
-    const dto = await apiClient.get<AdminPropertiesDto>(
-      API_ENDPOINTS.ADMIN.PROPERTIES,
-      {
-        params: {
-          search: filters.search,
-          transaction_type: filters.transactionType,
-          status: filters.status,
-          city: filters.city,
-          energy_rating: filters.energyRating,
-          price_min: filters.priceMin,
-          price_max: filters.priceMax,
-          page: filters.page ?? 1,
-          limit: filters.limit ?? 20,
-        },
+    const raw = await apiClient.get<unknown>(API_ENDPOINTS.ADMIN.PROPERTIES, {
+      params: {
+        search: filters.search,
+        transaction_type: filters.transactionType,
+        status: filters.status,
+        city: filters.city,
+        energy_rating: filters.energyRating,
+        price_min: filters.priceMin,
+        price_max: filters.priceMax,
+        page: filters.page ?? 1,
+        limit: filters.limit ?? 20,
       },
-    );
+    });
+    const dto = AdminPropertiesDtoSchema.parse(raw);
     return mapAdminProperties(dto);
   },
 
   async getPropertyById(id: string): Promise<PropertyDetail> {
-    const dto = await apiClient.get<PropertyDetailDto>(
+    const raw = await apiClient.get<unknown>(
       API_ENDPOINTS.ADMIN.PROPERTY_DETAIL(id),
     );
+    const dto = PropertyDetailDtoSchema.parse(raw);
     return mapPropertyDetail(dto);
   },
+};
 
+export const adminMutationService: IAdminMutationService = {
   async updateProperty(
     id: string,
     payload: UpdatePropertyPayload,
   ): Promise<PropertyDetail> {
-    const dto = await apiClient.patch<PropertyDetailDto>(
+    const raw = await apiClient.patch<unknown>(
       API_ENDPOINTS.ADMIN.PROPERTY_UPDATE(id),
-      toSnakeCase(payload),
+      toSnakeCase(payload as Record<string, unknown>),
     );
+    const dto = PropertyDetailDtoSchema.parse(raw);
     return mapPropertyDetail(dto);
   },
 

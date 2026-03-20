@@ -4,7 +4,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "radix-ui";
 
-import { useIsMobile } from "@/shared/hooks/use-mobile";
+import { useIsMobile } from "@/shared/hooks/useMobile";
 import { Button } from "./button";
 import {
   Sheet,
@@ -14,7 +14,7 @@ import {
   SheetTitle,
 } from "./sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
-import { RiSideBarLine } from "@remixicon/react";
+import { IconLayoutSidebar } from "@tabler/icons-react";
 import { cn } from "../utils";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -263,7 +263,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <RiSideBarLine />
+      <IconLayoutSidebar />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

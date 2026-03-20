@@ -2,8 +2,8 @@ import { Separator } from "@/shared/ui/separator";
 import { SidebarTrigger } from "@/shared/ui/sidebar";
 import { Link } from "react-router";
 import { IconPlus, IconCalendar } from "@tabler/icons-react";
-import { OfflineBanner } from "@/02-infrastructure/offline/OfflineBanner";
-import { PendingMutationsBadge } from "@/02-infrastructure/offline/PendingMutationsBadge";
+import { OfflineBanner } from "@/shared/ui/OfflineBanner";
+import { PendingMutationsBadge } from "@/shared/ui/PendingMutationsBadge";
 
 export function SiteHeader() {
   return (

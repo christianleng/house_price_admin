@@ -1,4 +1,4 @@
-import { usePendingMutationsCount } from "@/shared/hooks/use-PendingMutationsCount";
+import { usePendingMutationsCount } from "@/shared/hooks/usePendingMutationsCount";
 import { IconCloudOff } from "@tabler/icons-react";
 
 export function PendingMutationsBadge() {

@@ -1,26 +1,10 @@
 import type { LoginCredentials, User } from "@/00-domain/entities";
-import { tokenStorage } from "./TokenStorageAdapter";
-import { API_ENDPOINTS } from "./EndPoints";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
+import { API_ENDPOINTS } from "./endpoints";
 import { apiClient } from "./ApiClient";
 import type { IAuthService } from "@/00-domain/ports";
-
-export interface AuthTokenDto {
-  access_token: string;
-  token_type: string;
-}
-
-interface ApiUserDto {
-  id: string;
-  email: string;
-  is_active: boolean;
-  is_verified: boolean;
-  name: string;
-  phone: string;
-  agency_name?: string;
-  city?: string;
-  rsac_number?: string;
-  created_at: string;
-}
+import { AuthTokenDtoSchema, ApiUserDtoSchema } from "./dtoSchemas";
+import type { ApiUserDto } from "./dtoSchemas";
 
 function mapUser(dto: ApiUserDto): User {
   return {
@@ -43,21 +27,21 @@ export const authService: IAuthService = {
   },
 
   async login(credentials: LoginCredentials): Promise<void> {
-    const response = await apiClient.postForm<AuthTokenDto>(
-      API_ENDPOINTS.AUTH.LOGIN,
-      {
-        username: credentials.email,
-        password: credentials.password,
-      },
-    );
+    const raw = await apiClient.postForm<unknown>(API_ENDPOINTS.AUTH.LOGIN, {
+      username: credentials.email,
+      password: credentials.password,
+    });
 
-    if (response.access_token) {
-      tokenStorage.setToken(response.access_token);
+    const dto = AuthTokenDtoSchema.parse(raw);
+
+    if (dto.access_token) {
+      tokenStorage.setToken(dto.access_token);
     }
   },
 
   async getMe(): Promise<User> {
-    const dto = await apiClient.get<ApiUserDto>(API_ENDPOINTS.AUTH.ME);
+    const raw = await apiClient.get<unknown>(API_ENDPOINTS.AUTH.ME);
+    const dto = ApiUserDtoSchema.parse(raw);
     return mapUser(dto);
   },
 

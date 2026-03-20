@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/01-adapters/http/HttpAuthAdapter";
-import { tokenStorage } from "@/01-adapters/http/TokenStorageAdapter";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
 import type { LoginCredentials } from "@/00-domain/entities";
 
 export const AUTH_KEYS = {
@@ -17,7 +17,7 @@ export function useCurrentUser(enabled: boolean) {
       if ((error as { status?: number }).status === 401) return false;
       return failureCount < 2;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     staleTime: 1000 * 60 * 30,
   });
 }

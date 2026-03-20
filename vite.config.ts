@@ -23,9 +23,6 @@ export default defineConfig({
       // Le Service Worker s'enregistre automatiquement
       registerType: "autoUpdate",
 
-      // Fichiers à precacher au premier chargement
-      includeAssets: ["vite.svg"],
-
       manifest: {
         name: "House Price Admin",
         short_name: "PropAdmin",
@@ -67,9 +64,8 @@ export default defineConfig({
           },
         ],
 
-        // Précache tous les assets buildés (index.html, JS, CSS)
-        // → résout ERR_INTERNET_DISCONNECTED au refresh
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Précache tous les assets buildés (index.html, JS, CSS, fonts)
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
       },
 
       // En dev, active le SW pour pouvoir tester offline
@@ -80,6 +76,30 @@ export default defineConfig({
     }),
   ],
 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("/react-dom/") || id.includes("/react-dom@")) {
+            return "vendor-react-dom";
+          }
+          if (
+            (id.includes("/node_modules/react/") || id.includes("/react@")) &&
+            !id.includes("react-router") &&
+            !id.includes("react-hook-form")
+          ) {
+            return "vendor-react";
+          }
+          if (id.includes("react-router")) return "vendor-router";
+          if (id.includes("@tanstack/react-query")) return "vendor-query";
+          if (id.includes("react-hook-form") || id.includes("/zod/"))
+            return "vendor-forms";
+          if (id.includes("radix-ui")) return "vendor-ui";
+        },
+      },
+    },
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -87,6 +107,14 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+    },
+  },
+  preview: {
     proxy: {
       "/api": {
         target: "http://localhost:8000",

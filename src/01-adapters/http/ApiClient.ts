@@ -21,7 +21,7 @@ class APIClient {
   }
 
   private buildURL<P extends object>(endpoint: string, params?: P): string {
-    const url = new URL(`${this.baseURL}${endpoint}`);
+    const url = new URL(endpoint, this.baseURL || window.location.origin);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -146,10 +146,13 @@ class APIClient {
   }
 }
 
-import { tokenStorage } from "./TokenStorageAdapter";
+import { tokenStorage } from "@/01-adapters/storage/TokenStorageAdapter";
 
 export const apiClient = new APIClient(
   env.API_URL,
   () => tokenStorage.getToken(),
-  () => tokenStorage.clearToken(),
+  () => {
+    tokenStorage.clearToken();
+    window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+  },
 );

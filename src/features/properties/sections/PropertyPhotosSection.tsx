@@ -14,7 +14,7 @@ const PropertyPhotosSection = ({ photos }: PropertyPhotosSectionProps) => {
         {photos.map((photo) => (
           <div key={photo.id} className="relative">
             <img
-              src={photo.url}
+              src={photo.url ?? undefined}
               alt=""
               className="w-24 h-16 object-cover rounded-lg border border-border"
             />

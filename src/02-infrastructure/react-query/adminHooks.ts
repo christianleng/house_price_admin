@@ -3,13 +3,17 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { adminService } from "@/01-adapters/http/HttpAdminAdapter";
-import { enqueue } from "@/02-infrastructure/offline/mutationQueue";
+import { adminQueryService } from "@/01-adapters/http/HttpAdminAdapter";
+import { offlineAdminMutationService } from "@/02-infrastructure/offline/OfflineAdminMutationService";
 import type {
   AdminPropertiesFilters,
   PropertyDetail,
   UpdatePropertyPayload,
 } from "@/00-domain/entities";
+
+const STATS_STALE_TIME = 1000 * 60 * 5;
+const PROPERTY_STALE_TIME = 1000 * 60 * 2;
+export const DEFAULT_MONTHLY_STATS_MONTHS = 6;
 
 export const ADMIN_KEYS = {
   all: () => ["admin"] as const,
@@ -29,39 +33,39 @@ export const ADMIN_KEYS = {
 
 export const globalStatsQuery = {
   queryKey: ADMIN_KEYS.globalStats(),
-  queryFn: () => adminService.getGlobalStats(),
-  staleTime: 1000 * 60 * 5,
+  queryFn: () => adminQueryService.getGlobalStats(),
+  staleTime: STATS_STALE_TIME,
 };
 
-export const monthlyStatsQuery = (months = 6) => ({
+export const monthlyStatsQuery = (months = DEFAULT_MONTHLY_STATS_MONTHS) => ({
   queryKey: ADMIN_KEYS.monthlyStats(months),
-  queryFn: () => adminService.getMonthlyStats(months),
-  staleTime: 1000 * 60 * 5,
+  queryFn: () => adminQueryService.getMonthlyStats(months),
+  staleTime: STATS_STALE_TIME,
 });
 
 export const citiesPerformanceQuery = {
   queryKey: ADMIN_KEYS.citiesPerformance(),
-  queryFn: () => adminService.getCitiesPerformance(),
-  staleTime: 1000 * 60 * 5,
+  queryFn: () => adminQueryService.getCitiesPerformance(),
+  staleTime: STATS_STALE_TIME,
 };
 
 export const adminPropertiesQuery = (filters: AdminPropertiesFilters) => ({
   queryKey: ADMIN_KEYS.propertiesList(filters),
-  queryFn: () => adminService.getAdminProperties(filters),
-  staleTime: 1000 * 60 * 2,
+  queryFn: () => adminQueryService.getAdminProperties(filters),
+  staleTime: PROPERTY_STALE_TIME,
 });
 
 export const propertyDetailQuery = (id: string) => ({
   queryKey: ADMIN_KEYS.propertyDetail(id),
-  queryFn: () => adminService.getPropertyById(id),
-  staleTime: 1000 * 60 * 2,
+  queryFn: () => adminQueryService.getPropertyById(id),
+  staleTime: PROPERTY_STALE_TIME,
 });
 
 export function useGlobalStats() {
   return useSuspenseQuery(globalStatsQuery);
 }
 
-export function useMonthlyStats(months = 6) {
+export function useMonthlyStats(months = DEFAULT_MONTHLY_STATS_MONTHS) {
   return useSuspenseQuery(monthlyStatsQuery(months));
 }
 
@@ -83,25 +87,15 @@ export function useUpdateProperty(id: string) {
   return useMutation({
     networkMode: "always",
 
-    mutationFn: (payload: UpdatePropertyPayload) =>
-      adminService.updateProperty(id, payload),
-
     onMutate: async (payload) => {
-      console.log(
-        "🟡 [useUpdateProperty] onMutate — online:",
-        navigator.onLine,
-      );
-      // Annule les refetch en cours pour éviter un écrasement
       await queryClient.cancelQueries({
         queryKey: ADMIN_KEYS.propertyDetail(id),
       });
 
-      // Snapshot de l'état précédent pour rollback éventuel
       const previousProperty = queryClient.getQueryData<PropertyDetail>(
         ADMIN_KEYS.propertyDetail(id),
       );
 
-      // Met à jour le cache immédiatement (optimistic)
       queryClient.setQueryData<PropertyDetail>(
         ADMIN_KEYS.propertyDetail(id),
         (old) => (old ? ({ ...old, ...payload } as PropertyDetail) : old),
@@ -110,28 +104,20 @@ export function useUpdateProperty(id: string) {
       return { previousProperty };
     },
 
-    onError: async (error, payload, context) => {
-      console.group("🔴 [useUpdateProperty] onError");
-      console.log("online:", navigator.onLine);
-      console.log("error:", error);
-      console.groupEnd();
-      // Rollback du cache optimiste
+    mutationFn: (payload: UpdatePropertyPayload) =>
+      offlineAdminMutationService.updateProperty(id, payload),
+
+    onError: async (_error, _payload, context) => {
+      if (!navigator.onLine) return;
       if (context?.previousProperty) {
         queryClient.setQueryData(
           ADMIN_KEYS.propertyDetail(id),
           context.previousProperty,
         );
       }
-
-      // Si hors ligne → persiste en IndexedDB pour replay ultérieur
-      if (!navigator.onLine) {
-        await enqueue(id, payload);
-      }
     },
 
     onSuccess: async (updated) => {
-      console.log("✅ [useUpdateProperty] onSuccess — synced with server");
-      // Met à jour le cache avec la réponse serveur (source of truth)
       queryClient.setQueryData(ADMIN_KEYS.propertyDetail(id), updated);
       queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });
     },
@@ -141,7 +127,8 @@ export function useUpdateProperty(id: string) {
 export function useDeleteProperty() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => adminService.deleteProperty(id),
+    networkMode: "always",
+    mutationFn: (id: string) => offlineAdminMutationService.deleteProperty(id),
     onSuccess: (_data, id) => {
       queryClient.removeQueries({ queryKey: ADMIN_KEYS.propertyDetail(id) });
       queryClient.invalidateQueries({ queryKey: ADMIN_KEYS.properties() });

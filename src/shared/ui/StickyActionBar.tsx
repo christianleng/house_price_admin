@@ -40,7 +40,7 @@ export function StickyActionBar({
           type="submit"
           size="sm"
           className="h-7 text-xs"
-          disabled={isSaving}
+          disabled={!isDirty || isSaving}
         >
           {isSaving && <IconLoader2 className="size-3.5 mr-1 animate-spin" />}
           {saveLabel}

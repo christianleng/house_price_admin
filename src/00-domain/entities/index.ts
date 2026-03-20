@@ -1,4 +1,4 @@
-import type { TransactionType } from "../constants/property/property";
+import type { TransactionType } from "../constants/property";
 
 export interface User {
   id: string;
@@ -145,7 +145,7 @@ export interface AdminPropertiesFilters {
 
 export interface PhotoDetail {
   id: string;
-  url: string;
+  url: string | null;
   isPrimary: boolean;
   order: number;
 }

@@ -2,28 +2,28 @@ import type { UpdatePropertyPayload } from "@/00-domain/entities";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 import { Section } from "@/shared/ui/section";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 import type { FC } from "react";
 import {
-  Controller,
-  type Control,
+  // Controller,
+  // type Control,
   type UseFormRegister,
 } from "react-hook-form";
 
 interface PropertyGeneralSectionProps {
-  control: Control<UpdatePropertyPayload>;
+  // control: Control<UpdatePropertyPayload>;
   register: UseFormRegister<UpdatePropertyPayload>;
 }
 
 const PropertyGeneralSection: FC<PropertyGeneralSectionProps> = ({
-  control,
+  // control,
   register,
 }) => {
   return (
@@ -35,7 +35,7 @@ const PropertyGeneralSection: FC<PropertyGeneralSectionProps> = ({
             <Input id="title" className="h-8 text-xs" {...register("title")} />
           </Field>
 
-          <Field>
+          {/* <Field>
             <FieldLabel htmlFor="transactionType">
               Type de transaction
             </FieldLabel>
@@ -54,16 +54,16 @@ const PropertyGeneralSection: FC<PropertyGeneralSectionProps> = ({
                 </Select>
               )}
             />
-          </Field>
+          </Field> */}
 
-          <Field>
+          {/* <Field>
             <FieldLabel htmlFor="propertyType">Type de bien</FieldLabel>
             <Input
               id="propertyType"
               className="h-8 text-xs"
               {...register("propertyType")}
             />
-          </Field>
+          </Field> */}
         </div>
 
         <Field>

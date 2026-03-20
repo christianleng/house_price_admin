@@ -3,7 +3,7 @@ import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 
 import { cn } from "../utils";
 
-import { RiCheckLine, RiArrowRightSLine } from "@remixicon/react";
+import { IconCheck, IconChevronRight } from "@tabler/icons-react";
 
 function DropdownMenu({
   ...props
@@ -75,7 +75,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:text-destructive not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 group/dropdown-menu-item relative flex cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "focus:bg-accent hover:cursor-pointer focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:text-destructive not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 group/dropdown-menu-item relative flex cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       {...props}
@@ -108,7 +108,7 @@ function DropdownMenuCheckboxItem({
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
         <DropdownMenuPrimitive.ItemIndicator>
-          <RiCheckLine />
+          <IconCheck />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -150,7 +150,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <DropdownMenuPrimitive.ItemIndicator>
-          <RiCheckLine />
+          <IconCheck />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -232,7 +232,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <RiArrowRightSLine className="ml-auto" />
+      <IconChevronRight className="ml-auto" />
     </DropdownMenuPrimitive.SubTrigger>
   );
 }

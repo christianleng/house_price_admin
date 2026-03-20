@@ -21,7 +21,7 @@ import { useAdminProperties } from "@/02-infrastructure/react-query/adminHooks";
 import { filtersFromParams } from "@/shared/utils/propertyFilters";
 import Pagination from "@/shared/ui/Pagination";
 import { PropertyRow } from "./PropertyRow";
-import { ENERGY_RATINGS } from "@/00-domain/constants/property/property";
+import { ENERGY_RATINGS } from "@/00-domain/constants/property";
 
 const COLUMNS = [
   { id: "bien", header: "Bien" },

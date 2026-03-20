@@ -6,10 +6,10 @@ import { Select as SelectPrimitive } from "radix-ui";
 import { cn } from "../utils";
 
 import {
-  RiArrowDownSLine,
-  RiCheckLine,
-  RiArrowUpSLine,
-} from "@remixicon/react";
+  IconChevronDown,
+  IconCheck,
+  IconChevronUp,
+} from "@tabler/icons-react";
 
 function Select({
   ...props
@@ -56,7 +56,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <RiArrowDownSLine className="text-muted-foreground size-3.5 pointer-events-none" />
+        <IconChevronDown className="text-muted-foreground size-3.5 pointer-events-none" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -129,7 +129,7 @@ function SelectItem({
     >
       <span className="pointer-events-none absolute right-2 flex items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <RiCheckLine className="pointer-events-none" />
+          <IconCheck className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -166,7 +166,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <RiArrowUpSLine />
+      <IconChevronUp />
     </SelectPrimitive.ScrollUpButton>
   );
 }
@@ -184,7 +184,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <RiArrowDownSLine />
+      <IconChevronDown />
     </SelectPrimitive.ScrollDownButton>
   );
 }

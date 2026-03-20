@@ -28,7 +28,7 @@ storybook-static
 
 .env
 .env.test
-NOTE.md
+CLAUDE.md
 
 
 # Playwright
